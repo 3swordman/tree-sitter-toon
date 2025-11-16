@@ -1,0 +1,154 @@
+==================
+Comma delimiter - default
+==================
+
+data[3]: a,b,c
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string))
+          (value (unquoted_string)))))))
+
+==================
+Pipe delimiter - inline
+==================
+
+data[3|]: x|y|z
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string))
+          (value (unquoted_string)))))))
+
+==================
+Pipe delimiter - tabular
+==================
+
+data[2|]:
+  a|b|c
+  x|y|z
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (array_body
+          (tabular_row
+            (value (unquoted_string))
+            (value (unquoted_string))
+            (value (unquoted_string)))
+          (tabular_row
+            (value (unquoted_string))
+            (value (unquoted_string))
+            (value (unquoted_string))))))))
+
+==================
+Tab delimiter - inline
+==================
+
+data[2	]: a	b
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string)))))))
+
+==================
+Multiple delimiters in same document
+==================
+
+comma[2]: a,b
+pipe[2|]: x|y
+tab[2	]: m	n
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string))))
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string))))
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string)))))))
+
+==================
+Pipe delimiter with field list
+==================
+
+data[2|]{col1|col2}:
+  a|b
+  c|d
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter)
+          fields: (field_list
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value (unquoted_string))
+            (value (unquoted_string)))
+          (tabular_row
+            (value (unquoted_string))
+            (value (unquoted_string))))))))

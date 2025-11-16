@@ -1,0 +1,40 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "toon",
+      "camelcase": "Toon",
+      "title": "Toon",
+      "scope": "source.toon",
+      "file-types": [
+        "toon"
+      ],
+      "injection-regex": "^toon$",
+      "class-name": "TreeSitterToon"
+    }
+  ],
+  "metadata": {
+    "version": "0.0.1",
+    "license": "GPL-3.0-or-later",
+    "description": "Toon grammar for tree-sitter",
+    "authors": [
+      {
+        "name": "3swordman",
+        "email": "yyuxiaoran@qq.com",
+        "url": "https://github.com/3swordman"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/3swordman/tree-sitter-toon"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": false
+  }
+}

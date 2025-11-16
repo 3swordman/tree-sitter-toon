@@ -1,0 +1,205 @@
+==================
+Object with arrays and nested objects
+==================
+
+config:
+  name: MyApp
+  tags[3]: web,mobile,api
+  settings:
+    debug: true
+    port: 8080
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (object
+          (pair
+            key: (key (unquoted_key))
+            value: (value (unquoted_string)))
+          (pair
+            key: (key (unquoted_key))
+            (header
+              length: (number))
+            value: (inline_values
+              (value (unquoted_string))
+              (value (unquoted_string))
+              (value (unquoted_string))))
+          (pair
+            key: (key (unquoted_key))
+            value: (object
+              (pair
+                key: (key (unquoted_key))
+                value: (value (boolean)))
+              (pair
+                key: (key (unquoted_key))
+                value: (value (number))))))))))
+
+==================
+Multiple arrays in sequence
+==================
+
+arr1[2]: a,b
+arr2[2]: c,d
+arr3[2]: e,f
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string))))
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string))))
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string)))))))
+
+==================
+Array then object then array
+==================
+
+first[2]: 1,2
+middle:
+  key: value
+last[2]: 3,4
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (number))
+          (value (number))))
+      (pair
+        key: (key (unquoted_key))
+        value: (object
+          (pair
+            key: (key (unquoted_key))
+            value: (value (unquoted_string)))))
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (number))
+          (value (number)))))))
+
+==================
+Nested arrays at multiple levels
+==================
+
+level1:
+  items1[2]: a,b
+  level2:
+    items2[2]: c,d
+    level3:
+      items3[2]: e,f
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (object
+          (pair
+            key: (key (unquoted_key))
+            (header
+              length: (number))
+            value: (inline_values
+              (value (unquoted_string))
+              (value (unquoted_string))))
+          (pair
+            key: (key (unquoted_key))
+            value: (object
+              (pair
+                key: (key (unquoted_key))
+                (header
+                  length: (number))
+                value: (inline_values
+                  (value (unquoted_string))
+                  (value (unquoted_string))))
+              (pair
+                key: (key (unquoted_key))
+                value: (object
+                  (pair
+                    key: (key (unquoted_key))
+                    (header
+                      length: (number))
+                    value: (inline_values
+                      (value (unquoted_string))
+                      (value (unquoted_string))))))))))))))
+
+==================
+List array with mixed content types
+==================
+
+data[3]:
+  - name: Item1
+    value: 100
+  - name: Item2
+    tags[2]: a,b
+  - simple_value
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key (unquoted_key))
+                  value: (value (unquoted_string)))
+                (pair
+                  key: (key (unquoted_key))
+                  value: (value (number))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key (unquoted_key))
+                  value: (value (unquoted_string)))
+                (pair
+                  key: (key (unquoted_key))
+                  (header
+                    length: (number))
+                  value: (inline_values
+                    (value (unquoted_string))
+                    (value (unquoted_string)))))))
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value (unquoted_string)))))))))))

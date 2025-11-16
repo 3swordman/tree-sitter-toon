@@ -1,0 +1,243 @@
+==================
+List array with quoted primitive values
+==================
+
+items[3]:
+  - "first"
+  - "second"
+  - "third"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value (string))))))
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value (string))))))
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value (string)))))))))))
+
+==================
+List array with objects - first field on hyphen line
+==================
+
+users[2]:
+  - id: 1
+    name: Alice
+  - id: 2
+    name: Bob
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key (unquoted_key))
+                  value: (value (number)))
+                (pair
+                  key: (key (unquoted_key))
+                  value: (value (unquoted_string))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key (unquoted_key))
+                  value: (value (number)))
+                (pair
+                  key: (key (unquoted_key))
+                  value: (value (unquoted_string)))))))))))
+
+==================
+List array with objects - fully indented
+==================
+
+items[2]:
+  -
+    key1: value1
+    key2: value2
+  -
+    key1: value3
+    key2: value4
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key (unquoted_key))
+                  value: (value (unquoted_string)))
+                (pair
+                  key: (key (unquoted_key))
+                  value: (value (unquoted_string))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key (unquoted_key))
+                  value: (value (unquoted_string)))
+                (pair
+                  key: (key (unquoted_key))
+                  value: (value (unquoted_string)))))))))))
+
+==================
+List array with inline array on hyphen line
+==================
+
+matrix[2]:
+  - row[3]: 1,2,3
+  - row[3]: 4,5,6
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key (unquoted_key))
+                  (header
+                    length: (number))
+                  value: (inline_values
+                    (value (number))
+                    (value (number))
+                    (value (number)))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key (unquoted_key))
+                  (header
+                    length: (number))
+                  value: (inline_values
+                    (value (number))
+                    (value (number))
+                    (value (number)))))))))))))
+
+==================
+List array with delimited values
+==================
+
+data[2]:
+  - 1,2,3
+  - 4,5,6
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (row_values
+                (delimited_values
+                  (value (number))
+                  (value (number))
+                  (value (number))))))
+          (row
+            (value_row
+              (row_values
+                (delimited_values
+                  (value (number))
+                  (value (number))
+                  (value (number)))))))))))
+
+==================
+List array with nested object
+==================
+
+records[2]:
+  - id: 1
+    data:
+      x: 10
+      y: 20
+  - id: 2
+    data:
+      x: 30
+      y: 40
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key (unquoted_key))
+                  value: (value (number)))
+                (pair
+                  key: (key (unquoted_key))
+                  value: (object
+                    (pair
+                      key: (key (unquoted_key))
+                      value: (value (number)))
+                    (pair
+                      key: (key (unquoted_key))
+                      value: (value (number))))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key (unquoted_key))
+                  value: (value (number)))
+                (pair
+                  key: (key (unquoted_key))
+                  value: (object
+                    (pair
+                      key: (key (unquoted_key))
+                      value: (value (number)))
+                    (pair
+                      key: (key (unquoted_key))
+                      value: (value (number)))))))))))))

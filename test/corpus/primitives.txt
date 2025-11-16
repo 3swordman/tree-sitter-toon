@@ -1,0 +1,272 @@
+==================
+Null value
+==================
+
+value: null
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (null))))))
+
+==================
+Boolean true
+==================
+
+flag: true
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (boolean))))))
+
+==================
+Boolean false
+==================
+
+flag: false
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (boolean))))))
+
+==================
+Integer zero
+==================
+
+value: 0
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Positive integer
+==================
+
+value: 42
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Negative integer
+==================
+
+value: -17
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Decimal number
+==================
+
+value: 3.14
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Negative decimal
+==================
+
+value: -2.5
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Scientific notation - positive exponent
+==================
+
+value: 1.5e10
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Scientific notation - negative exponent
+==================
+
+value: 2.5e-3
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Scientific notation with capital E
+==================
+
+value: 1.5E10
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Empty string
+==================
+
+value: ""
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+Quoted string
+==================
+
+value: "hello world"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+Unquoted string
+==================
+
+value: hello
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+Unquoted string with spaces
+==================
+
+text: hello world test
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+Unquoted string with Unicode
+==================
+
+text: Héllo wörld 世界
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+Unquoted string with emoji
+==================
+
+greeting: Hello 👋 🎉
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+String with escape sequences
+==================
+
+text: "Line 1\nLine 2\tTabbed"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value
+          (string
+            (escape_sequence)
+            (escape_sequence)))))))

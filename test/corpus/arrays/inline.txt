@@ -1,0 +1,197 @@
+==================
+Inline array - comma delimiter
+==================
+
+tags[3]: web,mobile,api
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string))
+          (value (unquoted_string)))))))
+
+==================
+Inline array - pipe delimiter
+==================
+
+data[3|]: a|b|c
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string))
+          (value (unquoted_string)))))))
+
+==================
+Inline array - tab delimiter
+==================
+
+coords[2	]: 10	20
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value (number))
+          (value (number)))))))
+
+==================
+Inline array with mixed types
+==================
+
+mixed[4]: 42,true,"hello",null
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (number))
+          (value (boolean))
+          (value (string))
+          (value (null)))))))
+
+==================
+Inline array with quoted strings containing delimiter
+==================
+
+items[2]: "a,b,c","x,y,z"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (string))
+          (value (string)))))))
+
+==================
+Inline array single element
+==================
+
+single[1]: value
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (unquoted_string)))))))
+
+==================
+Empty inline array
+==================
+
+empty[0]: 
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))))))
+
+==================
+Inline array with scientific notation
+==================
+
+values[3]: 1.5e10,-2.5e-3,3.14
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (number))
+          (value (number))
+          (value (number)))))))
+
+==================
+Inline array with negative numbers
+==================
+
+nums[3]: -5,-10,-15
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (number))
+          (value (number))
+          (value (number)))))))
+
+==================
+Inline array with all primitive types
+==================
+
+all[6]: text,42,-3.14,true,false,null
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (number))
+          (value (number))
+          (value (boolean))
+          (value (boolean))
+          (value (null)))))))

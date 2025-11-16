@@ -1,0 +1,187 @@
+==================
+Simple object
+==================
+
+name: value
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+Object with multiple fields
+==================
+
+name: Alice
+age: 30
+active: true
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (boolean))))))
+
+==================
+Nested object
+==================
+
+server:
+  host: localhost
+  port: 8080
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (object
+          (pair
+            key: (key (unquoted_key))
+            value: (value (unquoted_string)))
+          (pair
+            key: (key (unquoted_key))
+            value: (value (number))))))))
+
+==================
+Deeply nested object - 3 levels
+==================
+
+level1:
+  level2:
+    level3:
+      key: value
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (object
+          (pair
+            key: (key (unquoted_key))
+            value: (object
+              (pair
+                key: (key (unquoted_key))
+                value: (object
+                  (pair
+                    key: (key (unquoted_key))
+                    value: (value (unquoted_string))))))))))))
+
+==================
+Object with dotted keys
+==================
+
+server.host: localhost
+server.port: 8080
+database.connection.timeout: 30
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Object with quoted keys
+==================
+
+"key-with-dash": value1
+"key:with:colon": value2
+"key[with]brackets": value3
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (string))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (string))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (string))
+        value: (value (unquoted_string))))))
+
+==================
+Object with empty string value
+==================
+
+outer:
+  inner: ""
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (object
+          (pair
+            key: (key (unquoted_key))
+            value: (value (string))))))))
+
+==================
+Object with all primitive types
+==================
+
+string: text
+number: 42
+decimal: 3.14
+boolean_true: true
+boolean_false: false
+null_value: null
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (boolean)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (boolean)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (null))))))

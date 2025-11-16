@@ -1,0 +1,243 @@
+==================
+Tabular array - basic
+==================
+
+data[2]:
+  1,foo
+  2,bar
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (tabular_row
+            (value (number))
+            (value (unquoted_string)))
+          (tabular_row
+            (value (number))
+            (value (unquoted_string))))))))
+
+==================
+Tabular array with field list - comma
+==================
+
+users[3]{id,name,active}:
+  1,Alice,true
+  2,Bob,false
+  3,Charlie,true
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value (number))
+            (value (unquoted_string))
+            (value (boolean)))
+          (tabular_row
+            (value (number))
+            (value (unquoted_string))
+            (value (boolean)))
+          (tabular_row
+            (value (number))
+            (value (unquoted_string))
+            (value (boolean))))))))
+
+==================
+Tabular array with field list - pipe delimiter
+==================
+
+data[2|]{col1|col2|col3}:
+  a|b|c
+  d|e|f
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter)
+          fields: (field_list
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value (unquoted_string))
+            (value (unquoted_string))
+            (value (unquoted_string)))
+          (tabular_row
+            (value (unquoted_string))
+            (value (unquoted_string))
+            (value (unquoted_string))))))))
+
+==================
+Tabular array with quoted field names
+==================
+
+data[2]{"first name","last name"}:
+  John,Doe
+  Jane,Smith
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name (string))
+            (field_name (string))))
+        value: (array_body
+          (tabular_row
+            (value (unquoted_string))
+            (value (unquoted_string)))
+          (tabular_row
+            (value (unquoted_string))
+            (value (unquoted_string))))))))
+
+==================
+Tabular array single row
+==================
+
+data[1]{id,name}:
+  1,Alice
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value (number))
+            (value (unquoted_string))))))))
+
+==================
+Tabular array with null values
+==================
+
+data[2]{id,value}:
+  1,null
+  2,null
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value (number))
+            (value (null)))
+          (tabular_row
+            (value (number))
+            (value (null))))))))
+
+==================
+Tabular array with numbers and strings
+==================
+
+products[2]{id,name,price}:
+  1,Widget,9.99
+  2,Gadget,19.99
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value (number))
+            (value (unquoted_string))
+            (value (number)))
+          (tabular_row
+            (value (number))
+            (value (unquoted_string))
+            (value (number))))))))
+
+==================
+Tabular array with all value types
+==================
+
+mixed[3]{str,num,bool,null_val}:
+  text,42,true,null
+  hello,3.14,false,null
+  world,0,true,null
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value (unquoted_string))
+            (value (number))
+            (value (boolean))
+            (value (null)))
+          (tabular_row
+            (value (unquoted_string))
+            (value (number))
+            (value (boolean))
+            (value (null)))
+          (tabular_row
+            (value (unquoted_string))
+            (value (number))
+            (value (boolean))
+            (value (null))))))))
