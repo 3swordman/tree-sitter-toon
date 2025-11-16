@@ -36,7 +36,8 @@ class BdistWheel(bdist_wheel):
             python, abi = "cp310", "abi3"
         # Use manylinux for Linux platforms
         if platform.startswith("linux"):
-            platform = "manylinux_2_17_" + platform.split("_")[-1]
+            arch = "_".join(platform.split("_")[1:])
+            platform = f"manylinux_2_17_{arch}"
         return python, abi, platform
 
 
