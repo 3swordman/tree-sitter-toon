@@ -11,7 +11,7 @@ This directory contains automated workflows for CI/CD.
 **What it does**:
 - Runs tests on multiple platforms (Ubuntu, macOS, Windows)
 - Tests with Node.js 18 and 20
-- Builds Python package
+- Tests Python package build
 - Lints code and checks grammar
 
 **Status Badge**:
@@ -19,34 +19,29 @@ This directory contains automated workflows for CI/CD.
 ![CI](https://github.com/3swordman/tree-sitter-toon/workflows/CI/badge.svg)
 ```
 
-### 2. Publish to PyPI (`publish.yml`)
+### 2. Build and Publish to PyPI (`publish.yml`)
 
 **Triggers**:
-- Automatically on GitHub Release (publishes to PyPI)
-- Manually via workflow dispatch (choose Test PyPI or PyPI)
+- **Automatic**: When you push a tag (e.g., `v0.1.0`)
+- **Manual**: Via workflow dispatch (choose Test PyPI or PyPI)
 
 **What it does**:
-- Builds Python package
-- Checks package integrity
-- Publishes to Test PyPI or PyPI
-- Uploads artifacts
+- Builds wheels for **all platforms**:
+  - Linux (x86_64, aarch64) - manylinux
+  - macOS (x86_64, arm64) - Intel and Apple Silicon
+  - Windows (AMD64)
+- Builds wheels for **Python 3.10, 3.11, 3.12**
+- Builds source distribution
+- Tests all packages
+- Publishes to PyPI automatically
+
+**Total build time**: ~30-40 minutes
 
 **Manual Trigger**:
 1. Go to Actions tab
-2. Select "Publish to PyPI"
+2. Select "Build and Publish to PyPI"
 3. Click "Run workflow"
 4. Choose destination (testpypi/pypi)
-
-### 3. Create Release (`release.yml`)
-
-**Triggers**:
-- Automatically when you push a version tag (e.g., `v0.1.0`)
-- Manually via workflow dispatch
-
-**What it does**:
-- Generates changelog from git commits
-- Creates GitHub Release
-- Marks as pre-release if version contains alpha/beta/rc
 
 ## Setup Required
 
@@ -74,19 +69,23 @@ Ensure the repository has these permissions:
 
 ### Publishing a Release
 
-**Method 1: Tag-based (Automatic)**
+**Method 1: Tag-based (Automatic)** ⭐ Recommended
 ```bash
 # Update version in pyproject.toml to 0.1.0
 
 git add pyproject.toml
 git commit -m "Bump version to 0.1.0"
-git tag v0.1.0
 git push origin main
+
+git tag v0.1.0
 git push origin v0.1.0
 
-# This triggers:
-# 1. create-release.yml → Creates GitHub Release
-# 2. publish.yml → Publishes to PyPI
+# This automatically:
+# 1. Builds wheels for all platforms (Linux, macOS, Windows)
+# 2. Builds wheels for Python 3.10, 3.11, 3.12
+# 3. Builds source distribution
+# 4. Publishes everything to PyPI
+# 5. Takes ~30-40 minutes total
 ```
 
 **Method 2: Manual Release**
