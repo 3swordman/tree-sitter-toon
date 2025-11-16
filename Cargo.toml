@@ -1,7 +1,7 @@
 [package]
 name = "tree-sitter-toon"
 description = "Toon grammar for tree-sitter"
-version = "0.0.5"
+version = "0.0.7"
 authors = ["3swordman <yyuxiaoran@qq.com>"]
 license = "GPL-3.0-or-later"
 readme = "README.md"
