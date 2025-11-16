@@ -34,6 +34,9 @@ class BdistWheel(bdist_wheel):
         python, abi, platform = super().get_tag()
         if python.startswith("cp"):
             python, abi = "cp310", "abi3"
+        # Use manylinux for Linux platforms
+        if platform.startswith("linux"):
+            platform = "manylinux_2_17_" + platform.split("_")[-1]
         return python, abi, platform
 
 

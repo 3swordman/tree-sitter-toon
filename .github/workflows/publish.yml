@@ -33,8 +33,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install build twine setuptools wheel
     
-    - name: Build package
-      run: python -m build
+    - name: Build package (source distribution only)
+      run: python -m build --sdist
+      
+    # Note: Binary wheels require proper manylinux/macosx tags
+    # Users will build locally from source distribution
     
     - name: Check package
       run: twine check dist/*

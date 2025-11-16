@@ -50,4 +50,5 @@ zig-out/
 *.zip
 
 # Other files
-IMPLEMENTATION_NOTES.md
+*.md
+!README.md
