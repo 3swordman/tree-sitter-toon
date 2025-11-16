@@ -1,0 +1,20 @@
+name: TOON Example
+version: 2.0
+simple_string: hello world
+unicode: Hello 世界 🎉
+number: 42
+decimal: 3.14
+active: true
+empty: null
+inline_array[3]: a,b,c
+empty_array[0]:
+table[2]{id,name}:
+  1,Alice
+  2,Bob
+users[2]:
+  - name: Alice
+    score: 100
+  - name: Bob
+    score: 200
+nested:
+  data[2]: x,y

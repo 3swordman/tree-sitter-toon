@@ -1,0 +1,76 @@
+==================
+Root array with inline values
+==================
+
+[3]: a,b,c
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number))
+      (inline_values
+        (value (unquoted_string))
+        (value (unquoted_string))
+        (value (unquoted_string))))))
+
+==================
+Root array with field list
+==================
+
+[2]{name,value}:
+  Alice,100
+  Bob,200
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)
+        fields: (field_list
+          (field_name (unquoted_key))
+          (field_name (unquoted_key))))
+      (array_body
+        (tabular_row
+          (value (unquoted_string))
+          (value (number)))
+        (tabular_row
+          (value (unquoted_string))
+          (value (number)))))))
+
+==================
+Root array with pipe delimiter
+==================
+
+[3|]: x|y|z
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)
+        delimiter: (delimiter))
+      (inline_values
+        (value (unquoted_string))
+        (value (unquoted_string))
+        (value (unquoted_string))))))
+
+==================
+Root empty array
+==================
+
+[0]:
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)))))
