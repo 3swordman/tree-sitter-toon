@@ -231,18 +231,24 @@ module.exports = grammar({
       )
     ),
 
-    // Values
+    // Values  
     value: $ => choice(
+      $.string,
       $.null,
       $.boolean,
       $.number,
-      $.string,
       $.unquoted_string
     ),
 
     // Unquoted strings: cannot start with -, and cannot contain : " [ ] { } , | \t \n \r or have leading/trailing space
-    // This matches the TOON spec: strings that don't need quotes (except for the restricted cases)
-    unquoted_string: $ => token(prec(-1, /[^\s:"\[\]{},|\t\n\r-][^\n\r:"\[\]{},|\t]*[^\s:"\[\]{},|\t\n\r]|[^\s:"\[\]{},|\t\n\r-]/)),
+    // This pattern explicitly excludes strings that would be valid numbers (those use the number rule)
+    // Strategy: match strings that contain at least one character that makes them non-numeric
+    unquoted_string: $ => token(choice(
+      // Starts with non-digit (but not -), anything after
+      seq(/[^\s:"\[\]{},|\t\n\r\-0-9]/, optional(/[^\n\r:"\[\]{},|\t]+/), optional(/[^\s:"\[\]{},|\t\n\r]/)),
+      // Starts with digit, has non-number chars in middle/end
+      seq(/[0-9]/, /[^\n\r:"\[\]{},|\t]*[^\s:"\[\]{},|\t\n\r0-9eE+.\-]/, optional(/[^\n\r:"\[\]{},|\t]*/), optional(/[^\s:"\[\]{},|\t\n\r]/))
+    )),
 
     null: $ => 'null',
 

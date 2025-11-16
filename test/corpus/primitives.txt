@@ -270,3 +270,154 @@ text: "Line 1\nLine 2\tTabbed"
           (string
             (escape_sequence)
             (escape_sequence)))))))
+
+==================
+Unquoted string - mathematical expression
+==================
+
+formula: 2+2=4
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+Unquoted string - complex expression
+==================
+
+expr: 10*5+3
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+Unquoted string - alphanumeric mix starting with digit
+==================
+
+code: 2b3c
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+Unquoted string - alphanumeric mix starting with letter
+==================
+
+code: a2b3c
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+Quoted string - version number (requires quoting due to multiple dots)
+==================
+
+version: "1.2.3"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+Quoted string - date-like format (requires quoting due to hyphens)
+==================
+
+date: "2024-11-16"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+Unquoted string - number with unit
+==================
+
+size: 42px
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+Unquoted string - hash/ID starting with digit
+==================
+
+id: 123abc456
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+Multiple fields - numbers and numeric strings
+==================
+
+age: 30
+formula: 2+2=4
+pi: 3.14
+code: a2b3
+version: 1.0
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))

@@ -1034,6 +1034,10 @@
       "members": [
         {
           "type": "SYMBOL",
+          "name": "string"
+        },
+        {
+          "type": "SYMBOL",
           "name": "null"
         },
         {
@@ -1046,10 +1050,6 @@
         },
         {
           "type": "SYMBOL",
-          "name": "string"
-        },
-        {
-          "type": "SYMBOL",
           "name": "unquoted_string"
         }
       ]
@@ -1057,12 +1057,79 @@
     "unquoted_string": {
       "type": "TOKEN",
       "content": {
-        "type": "PREC",
-        "value": -1,
-        "content": {
-          "type": "PATTERN",
-          "value": "[^\\s:\"\\[\\]{},|\\t\\n\\r-][^\\n\\r:\"\\[\\]{},|\\t]*[^\\s:\"\\[\\]{},|\\t\\n\\r]|[^\\s:\"\\[\\]{},|\\t\\n\\r-]"
-        }
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "PATTERN",
+                "value": "[^\\s:\"\\[\\]{},|\\t\\n\\r\\-0-9]"
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "PATTERN",
+                    "value": "[^\\n\\r:\"\\[\\]{},|\\t]+"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "PATTERN",
+                    "value": "[^\\s:\"\\[\\]{},|\\t\\n\\r]"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "PATTERN",
+                "value": "[0-9]"
+              },
+              {
+                "type": "PATTERN",
+                "value": "[^\\n\\r:\"\\[\\]{},|\\t]*[^\\s:\"\\[\\]{},|\\t\\n\\r0-9eE+.\\-]"
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "PATTERN",
+                    "value": "[^\\n\\r:\"\\[\\]{},|\\t]*"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "PATTERN",
+                    "value": "[^\\s:\"\\[\\]{},|\\t\\n\\r]"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     },
     "null": {
