@@ -139,8 +139,21 @@ bool tree_sitter_toon_external_scanner_scan(void *payload, TSLexer *lexer, const
       return true;
     }
     
-    // Dedent
+    // Dedent - may need multiple dedents to reach target indent level
     if (indent_length < current_indent && valid_symbols[DEDENT]) {
+      // Find the matching indent level
+      bool found = false;
+      for (int i = scanner->indents.size - 1; i >= 0; i--) {
+        if (scanner->indents.contents[i] == indent_length) {
+          found = true;
+          break;
+        }
+        if (scanner->indents.contents[i] < indent_length) {
+          break;
+        }
+      }
+      
+      // Emit one dedent at a time
       array_pop(&scanner->indents);
       lexer->result_symbol = DEDENT;
       return true;

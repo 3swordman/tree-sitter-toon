@@ -1,0 +1,242 @@
+==================
+String - all five escape sequences
+==================
+
+text: "backslash: \\ quote: \" newline: \n return: \r tab: \t"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value
+          (string
+            (escape_sequence)
+            (escape_sequence)
+            (escape_sequence)
+            (escape_sequence)
+            (escape_sequence)))))))
+
+==================
+String - hyphen must be quoted
+==================
+
+dash: "-"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+String - starts with hyphen must be quoted
+==================
+
+command: "-help"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+String - empty string must be quoted
+==================
+
+empty: ""
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+String - leading whitespace requires quotes
+==================
+
+padded: " value"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+String - trailing whitespace requires quotes
+==================
+
+padded: "value "
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+String - reserved word true must be quoted
+==================
+
+word: "true"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+String - reserved word false must be quoted
+==================
+
+word: "false"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+String - reserved word null must be quoted
+==================
+
+word: "null"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+String - numeric-like must be quoted
+==================
+
+version: "123"
+decimal: "3.14"
+scientific: "1e10"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+String - contains colon requires quotes
+==================
+
+url: "http://example.com"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+String - contains brackets requires quotes
+==================
+
+expr: "[test]"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+String - contains braces requires quotes
+==================
+
+json: "{test}"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))
+
+==================
+String - Unicode and emoji unquoted
+==================
+
+message: Hello世界👋
+emoji: 🎉
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+String - internal spaces allowed unquoted
+==================
+
+text: Hello World
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))

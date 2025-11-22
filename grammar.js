@@ -28,23 +28,24 @@ module.exports = grammar({
 
 
   rules: {
-    source_file: $ => choice(
-      seq(optional($._newline), $.document, optional($._newline)),
-      repeat1($._newline)
+    source_file: $ => seq(
+      optional($._newline),
+      optional($.document),
+      optional($._newline)
     ),
 
     document: $ => choice(
-      $.object,
       $.array,
+      $.object,
       $.value
     ),
 
     // Objects - root level or nested
     object: $ => choice(
-      // Root level object (no indent/dedent)
+      // Root level object (at least one pair)
       prec.left(1, repeat1($.pair)),
       // Nested object (with indent/dedent)
-      seq($._indent, repeat1($.pair), $._dedent)
+      prec(2, seq($._indent, repeat1($.pair), $._dedent))
     ),
 
     pair: $ => seq(
@@ -53,7 +54,7 @@ module.exports = grammar({
         // Pair with header (array)
         seq(
           $.header,
-          ':',
+          token.immediate(':'),
           optional(/[ \t]+/),
           choice(
             // Inline array  
@@ -66,16 +67,16 @@ module.exports = grammar({
         ),
         // Pair without header - primitive value
         seq(
-          ':',
+          token.immediate(':'),
           optional(/[ \t]+/),
           field('value', $.value),
           $._newline
         ),
-        // Pair without header - nested object
+        // Pair without header - nested object (may be empty)
         seq(
-          ':',
+          token.immediate(':'),
           $._newline,
-          field('value', $.object)
+          optional(field('value', $.object))
         )
       )
     ),
@@ -164,18 +165,18 @@ module.exports = grammar({
     ),
 
     row_values: $ => choice(
-      $.single_value,
-      $.delimited_values
+      prec(2, $.delimited_values),
+      prec(1, $.single_value)
     ),
 
-    single_value: $ => $.value,
+    single_value: $ => alias($.array_value, $.value),
 
     delimited_values: $ => seq(
-      $.value,
+      alias($.array_value, $.value),
       repeat1(seq(
         choice(',', '|', '\t'),
         optional(/[ \t]*/),
-        $.value
+        alias($.array_value, $.value)
       ))
     ),
 
@@ -211,39 +212,66 @@ module.exports = grammar({
       ))
     ),
 
-    object_with_first_field: $ => prec.left(seq(
-      // First field on the hyphen line
+    object_with_first_field: $ => prec.right(seq(
       alias($.first_field, $.pair),
-      // Remaining fields indented
-      optional(seq($._indent, repeat($.pair), $._dedent))
+      optional(seq(
+        $._indent,
+        repeat($.pair),
+        $._dedent
+      ))
     )),
 
-    first_field: $ => choice(
-      // Field with header (array)
-      seq(
+    first_field: $ => prec.right(choice(
+      // Field with header (array) followed by inline values
+      prec(3, seq(
         field('key', $.key),
         $.header,
         ':',
-        optional(/[ \t]+/),
-        field('value', choice(
-          // Inline array
-          seq($.inline_values, $._newline),
-          // List/tabular body would need to be indented further (not on hyphen line)
-          // Empty array
-          $._newline
-        ))
-      ),
-      // Field without header
-      seq(
+        /[ \t]+/,
+        field('value', $.inline_values),
+        $._newline
+      )),
+      // Field with header (array) followed by indented body
+      prec(2, seq(
+        field('key', $.key),
+        $.header,
+        ':',
+        $._newline,
+        $._indent,
+        field('value', $.array_body),
+        $._dedent
+      )),
+      // Field with header (array) - empty array
+      prec(1, seq(
+        field('key', $.key),
+        $.header,
+        ':',
+        $._newline
+      )),
+      // Field without header - nested object
+      prec(2, seq(
         field('key', $.key),
         ':',
-        optional(/[ \t]+/),
-        field('value', choice(
-          prec(2, seq($.inline_values, $._newline)),
-          prec(1, seq($.value, $._newline))
-        ))
-      )
-    ),
+        $._newline,
+        field('value', $.object)
+      )),
+      // Field without header - inline values (delimited primitives)
+      prec(2, seq(
+        field('key', $.key),
+        ':',
+        /[ \t]+/,
+        field('value', $.inline_values),
+        $._newline
+      )),
+      // Field without header - single primitive value
+      prec(1, seq(
+        field('key', $.key),
+        ':',
+        /[ \t]+/,
+        field('value', $.value),
+        $._newline
+      ))
+    )),
 
     // Values  
     value: $ => choice(
@@ -263,7 +291,13 @@ module.exports = grammar({
       seq(/[^\s:"\[\]{}\n\r\-0-9]/, optional(/[^\n\r:"\[\]{}]+/), optional(/[^\s:"\[\]{}\n\r]/)),
       // Starts with "0" followed by digits (forbidden leading zeros - must be string)
       seq('0', /[0-9]/, optional(/[^\n\r:"\[\]{}]*/), optional(/[^\s:"\[\]{}\n\r]/)),
-      // Starts with digit, has non-number chars in middle/end
+      // Numeric-like patterns that aren't valid numbers (e.g., "1.2.3", "16:9")
+      // These contain colons or multiple dots that disqualify them as numbers
+      seq(/[0-9]/, /[0-9.]*/, choice(
+        seq(':', /[^\n\r"\[\]{}]*/),  // Contains colon (e.g., "16:9")
+        seq('.', /[0-9]+/, '.', /[^\n\r"\[\]{}]*/)  // Multiple dots (e.g., "1.2.3")
+      ), optional(/[^\s:"\[\]{}\n\r]/)),
+      // Starts with digit, has non-number chars in middle/end  
       seq(/[0-9]/, /[^\n\r:"\[\]{}]*[^\s:"\[\]{}\n\r0-9eE+.\-]/, optional(/[^\n\r:"\[\]{}]*/), optional(/[^\s:"\[\]{}\n\r]/))
     )),
 

@@ -1,0 +1,142 @@
+==================
+Key - unquoted valid identifier
+==================
+
+myKey: value
+_private: value
+camelCase: value
+snake_case: value
+with123Numbers: value
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+Key - dotted keys allowed
+==================
+
+user.name: Alice
+config.server.port: 8080
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Key - requires quoting with hyphen
+==================
+
+"my-key": value
+"kebab-case": value
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (string))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (string))
+        value: (value (unquoted_string))))))
+
+==================
+Key - requires quoting with special chars
+==================
+
+"key:with:colons": value
+"key[with]brackets": value
+"key{with}braces": value
+"key\"with\"quotes": value
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (string))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (string))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (string))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (string))
+        value: (value (unquoted_string))))))
+
+==================
+Key - quoted key in array header
+==================
+
+"my-items"[2]: a,b
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (string))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string)))))))
+
+==================
+Key - quoted key in tabular header
+==================
+
+"my-table"[2]{"my-id","my-name"}:
+  1,Alice
+  2,Bob
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (string))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name (string))
+            (field_name (string))))
+        value: (array_body
+          (tabular_row
+            (value (number))
+            (value (unquoted_string)))
+          (tabular_row
+            (value (number))
+            (value (unquoted_string))))))))

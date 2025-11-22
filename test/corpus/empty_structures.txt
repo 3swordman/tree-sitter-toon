@@ -1,0 +1,83 @@
+==================
+Empty - empty inline array
+==================
+
+items[0]:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))))))
+
+==================
+Empty - empty tabular array
+==================
+
+items[0]{id,name}:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))))))))
+
+==================
+Empty - empty list array
+==================
+
+items[0]:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))))))
+
+==================
+Empty - nested empty object
+==================
+
+outer:
+  inner:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (object
+          (pair
+            key: (key (unquoted_key)))))))
+
+==================
+Empty - empty string value
+==================
+
+text: ""
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (string))))))

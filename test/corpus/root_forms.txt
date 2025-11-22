@@ -1,0 +1,140 @@
+==================
+Root form - empty document
+==================
+
+---
+
+(source_file)
+
+==================
+Root form - single primitive value
+==================
+
+hello
+
+---
+
+(source_file
+  (document
+    (value (unquoted_string))))
+
+==================
+Root form - single quoted string
+==================
+
+"hello world"
+
+---
+
+(source_file
+  (document
+    (value (string))))
+
+==================
+Root form - single number
+==================
+
+42
+
+---
+
+(source_file
+  (document
+    (value (number))))
+
+==================
+Root form - single boolean true
+==================
+
+true
+
+---
+
+(source_file
+  (document
+    (value (boolean))))
+
+==================
+Root form - single null
+==================
+
+null
+
+---
+
+(source_file
+  (document
+    (value (null))))
+
+==================
+Root form - root object with single field
+==================
+
+key: value
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+Root form - root array inline
+==================
+
+[3]: a,b,c
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number))
+      (inline_values
+        (value (unquoted_string))
+        (value (unquoted_string))
+        (value (unquoted_string))))))
+
+==================
+Root form - root array empty
+==================
+
+[0]:
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)))))
+
+==================
+Root form - root tabular array
+==================
+
+[2]{id,name}:
+  1,Alice
+  2,Bob
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)
+        fields: (field_list
+          (field_name (unquoted_key))
+          (field_name (unquoted_key))))
+      (array_body
+        (tabular_row
+          (value (number))
+          (value (unquoted_string)))
+        (tabular_row
+          (value (number))
+          (value (unquoted_string)))))))

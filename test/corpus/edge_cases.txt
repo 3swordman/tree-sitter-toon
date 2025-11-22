@@ -1,0 +1,246 @@
+==================
+Edge case - very deep nesting
+==================
+
+level1:
+  level2:
+    level3:
+      level4:
+        level5:
+          value: deep
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (object
+          (pair
+            key: (key (unquoted_key))
+            value: (object
+              (pair
+                key: (key (unquoted_key))
+                value: (object
+                  (pair
+                    key: (key (unquoted_key))
+                    value: (object
+                      (pair
+                        key: (key (unquoted_key))
+                        value: (object
+                          (pair
+                            key: (key (unquoted_key))
+                            value: (value (unquoted_string))))))))))))))))
+
+==================
+Edge case - many sibling fields
+==================
+
+f1: v1
+f2: v2
+f3: v3
+f4: v4
+f5: v5
+f6: v6
+f7: v7
+f8: v8
+f9: v9
+f10: v10
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+Edge case - mixed delimiter types in document
+==================
+
+comma[2]: a,b
+pipe[2|]: c|d
+nested:
+  tab[2	]: e	f
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string))))
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string))))
+      (pair
+        key: (key (unquoted_key))
+        value: (object
+          (pair
+            key: (key (unquoted_key))
+            (header
+              length: (number)
+              delimiter: (delimiter))
+            value: (inline_values
+              (value (unquoted_string))
+              (value (unquoted_string)))))))))
+
+==================
+Edge case - array with single element
+==================
+
+items[1]: only_one
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (unquoted_string)))))))
+
+==================
+Edge case - tabular array single row
+==================
+
+items[1]{id,name}:
+  1,Alice
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value (number))
+            (value (unquoted_string))))))))
+
+==================
+Edge case - inline array with all types
+==================
+
+mixed[5]: text,123,-3.14,true,null
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (number))
+          (value (number))
+          (value (boolean))
+          (value (null)))))))
+
+==================
+Edge case - delimiter in quoted string (non-active delimiter)
+==================
+
+items[2|]: a|b|"c,d"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string))
+          (value (string)))))))
+
+==================
+Edge case - complex object key patterns
+==================
+
+_private: hidden
+CONSTANT: value
+camelCase: style1
+snake_case: style2
+PascalCase: style3
+SCREAMING_SNAKE: style4
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))

@@ -52,8 +52,6 @@ tree-sitter parse example.toon
 
 ## Documentation
 
-- **IMPLEMENTATION_NOTES.md** - Complete implementation documentation
-- **TASK_COMPLETION.md** - Recent work summary
 - **example.toon** - Working demonstration file
 
 ## Test Organization

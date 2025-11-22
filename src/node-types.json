@@ -233,13 +233,9 @@
         ]
       },
       "value": {
-        "multiple": true,
+        "multiple": false,
         "required": false,
         "types": [
-          {
-            "type": "\n",
-            "named": false
-          },
           {
             "type": "array_body",
             "named": true

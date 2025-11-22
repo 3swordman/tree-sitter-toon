@@ -1,0 +1,229 @@
+==================
+Number - zero
+==================
+
+value: 0
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Number - negative zero becomes zero
+==================
+
+value: -0
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Number - positive integer
+==================
+
+value: 123
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Number - negative integer
+==================
+
+value: -456
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Number - decimal
+==================
+
+value: 3.14159
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Number - negative decimal
+==================
+
+value: -2.71828
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Number - scientific notation positive exponent
+==================
+
+value: 1e10
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Number - scientific notation negative exponent
+==================
+
+value: 1e-6
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Number - scientific notation with capital E
+==================
+
+value: 1E10
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Number - scientific notation with explicit plus
+==================
+
+value: 1e+10
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Number - large integer
+==================
+
+value: 9007199254740991
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Number - high precision decimal
+==================
+
+value: 0.123456789012345
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Number vs String - leading zero makes it a string
+==================
+
+code: 007
+pin: 0123
+number: 0
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (number))))))
+
+==================
+Number vs String - numeric-like strings
+==================
+
+version: 1.2.3
+ratio: 16:9
+price: $19.99
+percent: 50%
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
