@@ -152,3 +152,137 @@ data[2|]{col1|col2}:
           (tabular_row
             (value (unquoted_string))
             (value (unquoted_string))))))))
+
+
+==================
+
+==================
+Comprehensive delimiter variations
+==================
+
+delimiter_variations:
+  comma_in_header[3]: a,b,c
+  pipe_in_header[3|]: a|b|c
+  tab_in_header[3	]: a	b	c
+  comma_fields[2]{name,value}:
+    Alice,100
+    Bob,200
+  pipe_fields[2|]{name|value}:
+    Alice|100
+    Bob|200
+  tab_fields[2	]{name	value}:
+    Alice	100
+    Bob	200
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key))
+            (header
+              length: (number))
+            value: (inline_values
+              (value
+                (unquoted_string))
+              (value
+                (unquoted_string))
+              (value
+                (unquoted_string))))
+          (pair
+            key: (key
+              (unquoted_key))
+            (header
+              length: (number)
+              delimiter: (delimiter))
+            value: (inline_values
+              (value
+                (unquoted_string))
+              (value
+                (unquoted_string))
+              (value
+                (unquoted_string))))
+          (pair
+            key: (key
+              (unquoted_key))
+            (header
+              length: (number)
+              delimiter: (delimiter))
+            value: (inline_values
+              (value
+                (unquoted_string))
+              (value
+                (unquoted_string))
+              (value
+                (unquoted_string))))
+          (pair
+            key: (key
+              (unquoted_key))
+            (header
+              length: (number)
+              fields: (field_list
+                (field_name
+                  (unquoted_key))
+                (field_name
+                  (unquoted_key))))
+            value: (array_body
+              (tabular_row
+                (value
+                  (unquoted_string))
+                (value
+                  (number)))
+              (tabular_row
+                (value
+                  (unquoted_string))
+                (value
+                  (number)))))
+          (pair
+            key: (key
+              (unquoted_key))
+            (header
+              length: (number)
+              delimiter: (delimiter)
+              fields: (field_list
+                (field_name
+                  (unquoted_key))
+                (field_name
+                  (unquoted_key))))
+            value: (array_body
+              (tabular_row
+                (value
+                  (unquoted_string))
+                (value
+                  (number)))
+              (tabular_row
+                (value
+                  (unquoted_string))
+                (value
+                  (number)))))
+          (pair
+            key: (key
+              (unquoted_key))
+            (header
+              length: (number)
+              delimiter: (delimiter)
+              fields: (field_list
+                (field_name
+                  (unquoted_key))
+                (field_name
+                  (unquoted_key))))
+            value: (array_body
+              (tabular_row
+                (value
+                  (unquoted_string))
+                (value
+                  (number)))
+              (tabular_row
+                (value
+                  (unquoted_string))
+                (value
+                  (number))))))))))

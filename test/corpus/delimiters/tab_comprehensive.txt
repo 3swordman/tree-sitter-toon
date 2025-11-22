@@ -1,0 +1,219 @@
+==================
+Tab delimiter - simple inline array
+==================
+
+data[3	]: a	b	c
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string))
+          (value (unquoted_string)))))))
+
+==================
+Tab delimiter - tabular with fields
+==================
+
+users[2	]{name	age	city}:
+  Alice	30	NYC
+  Bob	25	LA
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter)
+          fields: (field_list
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))
+            (field_name (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value (unquoted_string))
+            (value (number))
+            (value (unquoted_string)))
+          (tabular_row
+            (value (unquoted_string))
+            (value (number))
+            (value (unquoted_string))))))))
+
+==================
+Tab delimiter - nested in object
+==================
+
+container:
+  items[3	]: x	y	z
+  count: 3
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (object
+          (pair
+            key: (key (unquoted_key))
+            (header
+              length: (number)
+              delimiter: (delimiter))
+            value: (inline_values
+              (value (unquoted_string))
+              (value (unquoted_string))
+              (value (unquoted_string))))
+          (pair
+            key: (key (unquoted_key))
+            value: (value (number))))))))
+
+==================
+Tab delimiter - multiple arrays same parent
+==================
+
+data:
+  first[2	]: a	b
+  second[3	]: x	y	z
+  third[2	]{id	name}:
+    1	Alice
+    2	Bob
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (object
+          (pair
+            key: (key (unquoted_key))
+            (header
+              length: (number)
+              delimiter: (delimiter))
+            value: (inline_values
+              (value (unquoted_string))
+              (value (unquoted_string))))
+          (pair
+            key: (key (unquoted_key))
+            (header
+              length: (number)
+              delimiter: (delimiter))
+            value: (inline_values
+              (value (unquoted_string))
+              (value (unquoted_string))
+              (value (unquoted_string))))
+          (pair
+            key: (key (unquoted_key))
+            (header
+              length: (number)
+              delimiter: (delimiter)
+              fields: (field_list
+                (field_name (unquoted_key))
+                (field_name (unquoted_key))))
+            value: (array_body
+              (tabular_row
+                (value (number))
+                (value (unquoted_string)))
+              (tabular_row
+                (value (number))
+                (value (unquoted_string))))))))))
+
+==================
+Tab delimiter - root array inline
+==================
+
+[3	]: a	b	c
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)
+        delimiter: (delimiter))
+      (inline_values
+        (value (unquoted_string))
+        (value (unquoted_string))
+        (value (unquoted_string))))))
+
+==================
+Tab delimiter - root array tabular
+==================
+
+[2	]{id	name	status}:
+  1	Alice	active
+  2	Bob	inactive
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)
+        delimiter: (delimiter)
+        fields: (field_list
+          (field_name (unquoted_key))
+          (field_name (unquoted_key))
+          (field_name (unquoted_key))))
+      (array_body
+        (tabular_row
+          (value (number))
+          (value (unquoted_string))
+          (value (unquoted_string)))
+        (tabular_row
+          (value (number))
+          (value (unquoted_string))
+          (value (unquoted_string)))))))
+
+==================
+Tab delimiter - empty array
+==================
+
+empty[0	]:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))))))
+
+==================
+Tab delimiter - with quoted values
+==================
+
+data[2	]: "hello	world"	plain
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value (string))
+          (value (unquoted_string)))))))
