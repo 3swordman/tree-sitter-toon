@@ -3,7 +3,7 @@
   "version": "0.1.3",
   "description": "Toon grammar for tree-sitter",
   "repository": "https://github.com/3swordman/tree-sitter-toon",
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "author": {
     "name": "3swordman",
     "email": "yyuxiaoran@qq.com",

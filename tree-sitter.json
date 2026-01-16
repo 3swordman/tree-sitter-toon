@@ -6,16 +6,14 @@
       "camelcase": "Toon",
       "title": "Toon",
       "scope": "source.toon",
-      "file-types": [
-        "toon"
-      ],
+      "file-types": ["toon"],
       "injection-regex": "^toon$",
       "class-name": "TreeSitterToon"
     }
   ],
   "metadata": {
     "version": "0.1.3",
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "description": "Toon grammar for tree-sitter",
     "authors": [
       {

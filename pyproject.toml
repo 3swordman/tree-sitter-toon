@@ -10,7 +10,7 @@ keywords = ["incremental", "parsing", "tree-sitter", "toon", "serialization", "d
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
-  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  "License :: OSI Approved :: MIT License",
   "Programming Language :: C",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.10",
@@ -24,7 +24,7 @@ classifiers = [
 ]
 authors = [{ name = "3swordman", email = "yyuxiaoran@qq.com" }]
 requires-python = ">=3.10"
-license.text = "GPL-3.0-or-later"
+license.text = "MIT"
 readme = "README.md"
 
 [project.urls]

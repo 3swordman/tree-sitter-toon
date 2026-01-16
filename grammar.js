@@ -1,7 +1,7 @@
 /**
  * @file TOON (Token-Oriented Object Notation) grammar for tree-sitter
  * @author 3swordman <yyuxiaoran@qq.com>
- * @license GPL-3.0-or-later
+ * @license MIT
  * @see {@link https://github.com/toon-format/spec TOON Specification v2.0}
  */
 
