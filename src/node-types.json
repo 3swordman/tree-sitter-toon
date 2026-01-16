@@ -189,6 +189,29 @@
     }
   },
   {
+    "type": "list_array",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "array_body",
+          "named": true
+        },
+        {
+          "type": "header",
+          "named": true
+        },
+        {
+          "type": "inline_values",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "object",
     "named": true,
     "fields": {},
@@ -404,6 +427,10 @@
       "multiple": false,
       "required": true,
       "types": [
+        {
+          "type": "list_array",
+          "named": true
+        },
         {
           "type": "row_values",
           "named": true

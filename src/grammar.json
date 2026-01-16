@@ -358,6 +358,78 @@
         }
       ]
     },
+    "list_array": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "header"
+        },
+        {
+          "type": "STRING",
+          "value": ":"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[ \\t]+"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "inline_values"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_newline"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_newline"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_indent"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "array_body"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_dedent"
+                }
+              ]
+            },
+            {
+              "type": "PREC_DYNAMIC",
+              "value": -1,
+              "content": {
+                "type": "SYMBOL",
+                "name": "_newline"
+              }
+            }
+          ]
+        }
+      ]
+    },
     "array_body": {
       "type": "REPEAT1",
       "content": {
@@ -630,31 +702,61 @@
       ]
     },
     "value_row": {
-      "type": "SEQ",
+      "type": "CHOICE",
       "members": [
         {
-          "type": "TOKEN",
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "-"
-              },
-              {
-                "type": "PATTERN",
-                "value": "[ \\t]+"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "TOKEN",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "-"
+                  },
+                  {
+                    "type": "PATTERN",
+                    "value": "[ \\t]+"
+                  }
+                ]
               }
-            ]
-          }
+            },
+            {
+              "type": "SYMBOL",
+              "name": "list_array"
+            }
+          ]
         },
         {
-          "type": "SYMBOL",
-          "name": "row_values"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_newline"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "TOKEN",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "-"
+                  },
+                  {
+                    "type": "PATTERN",
+                    "value": "[ \\t]+"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "SYMBOL",
+              "name": "row_values"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_newline"
+            }
+          ]
         }
       ]
     },
@@ -680,13 +782,8 @@
       ]
     },
     "single_value": {
-      "type": "ALIAS",
-      "content": {
-        "type": "SYMBOL",
-        "name": "array_value"
-      },
-      "named": true,
-      "value": "value"
+      "type": "SYMBOL",
+      "name": "value"
     },
     "delimited_values": {
       "type": "SEQ",
@@ -1205,6 +1302,15 @@
         {
           "type": "SYMBOL",
           "name": "unquoted_string"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "unquoted_key"
+          },
+          "named": true,
+          "value": "unquoted_string"
         }
       ]
     },

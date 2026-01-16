@@ -1,0 +1,4295 @@
+==================
+spec decode: arrays-nested - parses list arrays for non-uniform objects
+==================
+
+items[2]:
+  - id: 1
+    name: First
+  - id: 2
+    name: Second
+    extra: true
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (boolean)))))))))))
+
+==================
+spec decode: arrays-nested - parses list arrays with empty items
+==================
+
+items[3]:
+  - first
+  - second
+  -
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)))))
+  (ERROR
+    (row
+      (value_row
+        (row_values
+          (single_value
+            (value
+              (unquoted_string))))))
+    (row
+      (value_row
+        (row_values
+          (single_value
+            (value
+              (unquoted_string))))))))
+
+==================
+spec decode: arrays-nested - parses list arrays with deeply nested objects
+==================
+
+items[2]:
+  - properties:
+      state:
+        type: string
+  - id: 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (object
+                    (pair
+                      key: (key
+                        (unquoted_key))
+                      value: (object
+                        (pair
+                          key: (key
+                            (unquoted_key))
+                          value: (value
+                            (unquoted_string)))))
+                    (ERROR)
+                    (pair
+                      key: (key
+                        (unquoted_key))
+                      value: (value
+                        (number)))))))))))))
+
+==================
+spec decode: arrays-nested - parses list arrays containing objects with nested properties
+==================
+
+items[1]:
+  - id: 1
+    nested:
+      x: 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (object
+                    (pair
+                      key: (key
+                        (unquoted_key))
+                      value: (value
+                        (number)))))))))))))
+
+==================
+spec decode: arrays-nested - parses list items whose first field is a tabular array
+==================
+
+items[1]:
+  - users[2]{id,name}:
+      1,Ada
+      2,Bob
+    status: active
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  (header
+                    length: (number)
+                    fields: (field_list
+                      (field_name
+                        (unquoted_key))
+                      (field_name
+                        (unquoted_key))))
+                  value: (array_body
+                    (tabular_row
+                      (value
+                        (number))
+                      (value
+                        (unquoted_string)))
+                    (tabular_row
+                      (value
+                        (number))
+                      (value
+                        (unquoted_string)))))))))
+        (ERROR
+          (value
+            (unquoted_string))
+          (unquoted_key))))))
+
+==================
+spec decode: arrays-nested - parses single-field list-item object with tabular array
+==================
+
+items[1]:
+  - users[2]{id,name}:
+      1,Ada
+      2,Bob
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  (header
+                    length: (number)
+                    fields: (field_list
+                      (field_name
+                        (unquoted_key))
+                      (field_name
+                        (unquoted_key))))
+                  value: (array_body
+                    (tabular_row
+                      (value
+                        (number))
+                      (value
+                        (unquoted_string)))
+                    (tabular_row
+                      (value
+                        (number))
+                      (value
+                        (unquoted_string)))))))))))))
+
+==================
+spec decode: arrays-nested - parses objects containing arrays (including empty arrays) in list format
+==================
+
+items[1]:
+  - name: Ada
+    data[0]:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  (header
+                    length: (number)))))))))))
+
+==================
+spec decode: arrays-nested - parses arrays of arrays within objects
+==================
+
+items[1]:
+  - matrix[2]:
+      - [2]: 1,2
+      - [2]: 3,4
+    name: grid
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  (header
+                    length: (number))
+                  value: (array_body
+                    (row
+                      (value_row
+                        (list_array
+                          (header
+                            length: (number))
+                          (inline_values
+                            (value
+                              (number))
+                            (value
+                              (number))))))
+                    (row
+                      (value_row
+                        (list_array
+                          (header
+                            length: (number))
+                          (inline_values
+                            (value
+                              (number))
+                            (value
+                              (number))))))))))))
+        (ERROR
+          (value
+            (unquoted_string))
+          (unquoted_key))))))
+
+==================
+spec decode: arrays-nested - parses nested arrays of primitives
+==================
+
+pairs[2]:
+  - [2]: a,b
+  - [2]: c,d
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number))
+                (inline_values
+                  (value
+                    (unquoted_string))
+                  (value
+                    (unquoted_string))))))
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number))
+                (inline_values
+                  (value
+                    (unquoted_string))
+                  (value
+                    (unquoted_string)))))))))))
+
+==================
+spec decode: arrays-nested - parses quoted strings and mixed lengths in nested arrays
+==================
+
+pairs[2]:
+  - [2]: a,b
+  - [3]: "c,d","e:f","true"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number))
+                (inline_values
+                  (value
+                    (unquoted_string))
+                  (value
+                    (unquoted_string))))))
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number))
+                (inline_values
+                  (value
+                    (string))
+                  (value
+                    (string))
+                  (value
+                    (string)))))))))))
+
+==================
+spec decode: arrays-nested - parses empty inner arrays
+==================
+
+pairs[2]:
+  - [0]:
+  - [0]:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number)))))
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number))))))))))
+
+==================
+spec decode: arrays-nested - parses mixed-length inner arrays
+==================
+
+pairs[2]:
+  - [1]: 1
+  - [2]: 2,3
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number))
+                (inline_values
+                  (value
+                    (number))))))
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number))
+                (inline_values
+                  (value
+                    (number))
+                  (value
+                    (number)))))))))))
+
+==================
+spec decode: arrays-nested - parses root-level primitive array inline
+==================
+
+[5]: x,y,"true",true,10
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number))
+      (inline_values
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))
+        (value
+          (string))
+        (value
+          (boolean))
+        (value
+          (number))))))
+
+==================
+spec decode: arrays-nested - parses root-level array of uniform objects in tabular format
+==================
+
+[2]{id}:
+  1
+  2
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)
+        fields: (field_list
+          (field_name
+            (unquoted_key))))
+      (array_body
+        (tabular_row
+          (value
+            (number)))
+        (tabular_row
+          (value
+            (number)))))))
+
+==================
+spec decode: arrays-nested - parses root-level array of non-uniform objects in list format
+==================
+
+[2]:
+  - id: 1
+  - id: 2
+    name: Ada
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number))
+      (array_body
+        (row
+          (object_row
+            (object
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (number))))))
+        (row
+          (object_row
+            (object
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (number)))
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (unquoted_string))))))))))
+
+==================
+spec decode: arrays-nested - parses root-level array mixing primitive, object, and array of objects in list format
+==================
+
+[3]:
+  - summary
+  - id: 1
+    name: Ada
+  - [2]:
+    - id: 2
+    - status: draft
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number))
+      (array_body
+        (row
+          (value_row
+            (row_values
+              (single_value
+                (value
+                  (unquoted_string))))))
+        (row
+          (object_row
+            (object
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (number)))
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (unquoted_string))))))
+        (row
+          (value_row
+            (list_array
+              (header
+                length: (number))
+              (array_body
+                (row
+                  (object_row
+                    (object
+                      (pair
+                        key: (key
+                          (unquoted_key))
+                        value: (value
+                          (number))))))
+                (row
+                  (object_row
+                    (object
+                      (pair
+                        key: (key
+                          (unquoted_key))
+                        value: (value
+                          (unquoted_string))))))))))))))
+
+==================
+spec decode: arrays-nested - parses root-level array of arrays
+==================
+
+[2]:
+  - [2]: 1,2
+  - [0]:
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number))
+      (array_body
+        (row
+          (value_row
+            (list_array
+              (header
+                length: (number))
+              (inline_values
+                (value
+                  (number))
+                (value
+                  (number))))))
+        (row
+          (value_row
+            (list_array
+              (header
+                length: (number)))))))))
+
+==================
+spec decode: arrays-nested - parses empty root-level array
+==================
+
+[0]:
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)))))
+
+==================
+spec decode: arrays-nested - parses complex mixed object with arrays and nested objects
+==================
+
+user:
+  id: 123
+  name: Ada
+  tags[2]: reading,gaming
+  active: true
+  prefs[0]:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (value
+              (number)))
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (value
+              (unquoted_string)))
+          (pair
+            key: (key
+              (unquoted_key))
+            (header
+              length: (number))
+            value: (inline_values
+              (value
+                (unquoted_string))
+              (value
+                (unquoted_string))))
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (value
+              (boolean)))
+          (pair
+            key: (key
+              (unquoted_key))
+            (header
+              length: (number))))))))
+
+==================
+spec decode: arrays-nested - parses arrays mixing primitives, objects, and strings in list format
+==================
+
+items[3]:
+  - 1
+  - a: 1
+  - text
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value
+                    (number))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number))))))
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value
+                    (unquoted_string)))))))))))
+
+==================
+spec decode: arrays-nested - parses arrays mixing objects and arrays
+==================
+
+items[2]:
+  - a: 1
+  - [2]: 1,2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number))))))
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number))
+                (inline_values
+                  (value
+                    (number))
+                  (value
+                    (number)))))))))))
+
+==================
+spec decode: arrays-nested - parses quoted key with list array format
+==================
+
+"x-items"[2]:
+  - id: 1
+  - id: 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (inline_values
+                    (value
+                      (number))))))))))))
+
+==================
+spec decode: arrays-primitive - parses string arrays inline
+==================
+
+tags[3]: reading,gaming,coding
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec decode: arrays-primitive - parses number arrays inline
+==================
+
+nums[3]: 1,2,3
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (number))
+          (value
+            (number))
+          (value
+            (number)))))))
+
+==================
+spec decode: arrays-primitive - parses mixed primitive arrays inline
+==================
+
+data[4]: x,y,true,10
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (boolean))
+          (value
+            (number)))))))
+
+==================
+spec decode: arrays-primitive - parses empty arrays
+==================
+
+items[0]:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))))))
+
+==================
+spec decode: arrays-primitive - parses single-item array with empty string
+==================
+
+items[1]: ""
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (string)))))))
+
+==================
+spec decode: arrays-primitive - parses multi-item array with empty string
+==================
+
+items[3]: a,"",b
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec decode: arrays-primitive - parses whitespace-only strings in arrays
+==================
+
+items[2]: " ","  "
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (string))
+          (value
+            (string)))))))
+
+==================
+spec decode: arrays-primitive - parses strings with delimiters in arrays
+==================
+
+items[3]: a,"b,c","d:e"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (string))
+          (value
+            (string)))))))
+
+==================
+spec decode: arrays-primitive - parses strings that look like primitives when quoted
+==================
+
+items[4]: x,"true","42","-3.14"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (string))
+          (value
+            (string))
+          (value
+            (string)))))))
+
+==================
+spec decode: arrays-primitive - parses strings with structural tokens in arrays
+==================
+
+items[3]: "[5]","- item","{key}"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (string))
+          (value
+            (string))
+          (value
+            (string)))))))
+
+==================
+spec decode: arrays-primitive - parses quoted key with inline array
+==================
+
+"my-key"[3]: 1,2,3
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (number))
+          (value
+            (number))
+          (value
+            (number)))))))
+
+==================
+spec decode: arrays-primitive - parses quoted key containing brackets with inline array
+==================
+
+"key[test]"[3]: 1,2,3
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (number))
+          (value
+            (number))
+          (value
+            (number)))))))
+
+==================
+spec decode: arrays-primitive - parses quoted key with empty array
+==================
+
+"x-custom"[0]:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        (header
+          length: (number))))))
+
+==================
+spec decode: arrays-tabular - parses tabular arrays of uniform objects
+==================
+
+items[2]{sku,qty,price}:
+  A1,2,9.99
+  B2,1,14.5
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (number))
+            (value
+              (number)))
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (number))
+            (value
+              (number))))))))
+
+==================
+spec decode: arrays-tabular - parses nulls and quoted values in tabular rows
+==================
+
+items[2]{id,value}:
+  1,null
+  2,"test"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (null)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (string))))))))
+
+==================
+spec decode: arrays-tabular - parses quoted colon in tabular row as data
+==================
+
+items[2]{id,note}:
+  1,"a:b"
+  2,"c:d"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (string)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (string))))))))
+
+==================
+spec decode: arrays-tabular - parses quoted header keys in tabular arrays
+==================
+
+items[2]{"order:id","full name"}:
+  1,Ada
+  2,Bob
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (string))
+            (field_name
+              (string))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))))))))
+
+==================
+spec decode: arrays-tabular - parses quoted key with tabular array format
+==================
+
+"x-items"[2]{id,name}:
+  1,Ada
+  2,Bob
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))))))))
+
+==================
+spec decode: arrays-tabular - treats unquoted colon as terminator for tabular rows and start of key-value pair
+==================
+
+items[2]{id,name}:
+  1,Alice
+  2,Bob
+count: 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string)))))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: blank-lines - accepts blank line between root-level fields
+==================
+
+a: 1
+
+b: 2
+
+---
+
+(source_file
+  (ERROR
+    (document
+      (object
+        (pair
+          key: (key
+            (unquoted_key))
+          value: (value
+            (number))))))
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: blank-lines - accepts trailing newline at end of file
+==================
+
+a: 1
+
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: blank-lines - accepts multiple trailing newlines
+==================
+
+a: 1
+
+
+
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number)))))
+  (ERROR))
+
+==================
+spec decode: blank-lines - accepts blank line after array ends
+==================
+
+items[1]:
+  - a
+
+b: 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value
+                    (unquoted_string))))))))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: blank-lines - accepts blank line between nested object fields
+==================
+
+a:
+  b: 1
+
+  c: 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (value
+              (number)))))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: blank-lines - ignores blank lines inside list array when strict=false
+==================
+
+items[3]:
+  - a
+
+  - b
+  - c
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value
+                    (unquoted_string))))))))))
+  (ERROR
+    (key
+      (unquoted_key))
+    (unquoted_key)))
+
+==================
+spec decode: blank-lines - ignores blank lines inside tabular array when strict=false
+==================
+
+items[2]{id,name}:
+  1,Alice
+
+  2,Bob
+
+---
+
+(source_file
+  (ERROR
+    (pair
+      key: (key
+        (unquoted_key))
+      (header
+        length: (number)
+        fields: (field_list
+          (field_name
+            (unquoted_key))
+          (field_name
+            (unquoted_key))))
+      value: (array_body
+        (tabular_row
+          (value
+            (number))
+          (value
+            (unquoted_string))))))
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec decode: blank-lines - ignores multiple blank lines in arrays when strict=false
+==================
+
+items[2]:
+  - a
+
+
+  - b
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value
+                    (unquoted_string))))))))))
+  (ERROR
+    (key
+      (unquoted_key))))
+
+==================
+spec decode: delimiters - parses primitive arrays with tab delimiter
+==================
+
+tags[3	]: reading	gaming	coding
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec decode: delimiters - parses primitive arrays with pipe delimiter
+==================
+
+tags[3|]: reading|gaming|coding
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec decode: delimiters - parses primitive arrays with comma delimiter
+==================
+
+tags[3]: reading,gaming,coding
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec decode: delimiters - parses tabular arrays with tab delimiter
+==================
+
+items[2	]{sku	qty	price}:
+  A1	2	9.99
+  B2	1	14.5
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (number))
+            (value
+              (number)))
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (number))
+            (value
+              (number))))))))
+
+==================
+spec decode: delimiters - parses tabular arrays with pipe delimiter
+==================
+
+items[2|]{sku|qty|price}:
+  A1|2|9.99
+  B2|1|14.5
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (number))
+            (value
+              (number)))
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (number))
+            (value
+              (number))))))))
+
+==================
+spec decode: delimiters - parses nested arrays with tab delimiter
+==================
+
+pairs[2	]:
+  - [2	]: a	b
+  - [2	]: c	d
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (array_body
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number)
+                  delimiter: (delimiter))
+                (inline_values
+                  (value
+                    (unquoted_string))
+                  (value
+                    (unquoted_string))))))
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number)
+                  delimiter: (delimiter))
+                (inline_values
+                  (value
+                    (unquoted_string))
+                  (value
+                    (unquoted_string)))))))))))
+
+==================
+spec decode: delimiters - parses nested arrays with pipe delimiter
+==================
+
+pairs[2|]:
+  - [2|]: a|b
+  - [2|]: c|d
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (array_body
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number)
+                  delimiter: (delimiter))
+                (inline_values
+                  (value
+                    (unquoted_string))
+                  (value
+                    (unquoted_string))))))
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number)
+                  delimiter: (delimiter))
+                (inline_values
+                  (value
+                    (unquoted_string))
+                  (value
+                    (unquoted_string)))))))))))
+
+==================
+spec decode: delimiters - parses nested arrays inside list items with default comma delimiter
+==================
+
+items[1	]:
+  - tags[3]: a,b,c
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  (header
+                    length: (number))
+                  value: (inline_values
+                    (value
+                      (unquoted_string))
+                    (value
+                      (unquoted_string))
+                    (value
+                      (unquoted_string))))))))))))
+
+==================
+spec decode: delimiters - parses nested arrays inside list items with default comma delimiter when parent uses pipe
+==================
+
+items[1|]:
+  - tags[3]: a,b,c
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  (header
+                    length: (number))
+                  value: (inline_values
+                    (value
+                      (unquoted_string))
+                    (value
+                      (unquoted_string))
+                    (value
+                      (unquoted_string))))))))))))
+
+==================
+spec decode: delimiters - parses root-level array with tab delimiter
+==================
+
+[3	]: x	y	z
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)
+        delimiter: (delimiter))
+      (inline_values
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))))))
+
+==================
+spec decode: delimiters - parses root-level array with pipe delimiter
+==================
+
+[3|]: x|y|z
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)
+        delimiter: (delimiter))
+      (inline_values
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))))))
+
+==================
+spec decode: delimiters - parses root-level array of objects with tab delimiter
+==================
+
+[2	]{id}:
+  1
+  2
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)
+        delimiter: (delimiter)
+        fields: (field_list
+          (field_name
+            (unquoted_key))))
+      (array_body
+        (tabular_row
+          (value
+            (number)))
+        (tabular_row
+          (value
+            (number)))))))
+
+==================
+spec decode: delimiters - parses root-level array of objects with pipe delimiter
+==================
+
+[2|]{id}:
+  1
+  2
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)
+        delimiter: (delimiter)
+        fields: (field_list
+          (field_name
+            (unquoted_key))))
+      (array_body
+        (tabular_row
+          (value
+            (number)))
+        (tabular_row
+          (value
+            (number)))))))
+
+==================
+spec decode: delimiters - parses values containing tab delimiter when quoted
+==================
+
+items[3	]: a	"b\tc"	d
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (string
+              (escape_sequence)))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec decode: delimiters - parses values containing pipe delimiter when quoted
+==================
+
+items[3|]: a|"b|c"|d
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec decode: delimiters - does not split on commas when using tab delimiter
+==================
+
+items[2	]: a,b	c,d
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec decode: delimiters - does not split on commas when using pipe delimiter
+==================
+
+items[2|]: a,b|c,d
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec decode: delimiters - parses tabular values containing comma with comma delimiter
+==================
+
+items[2]{id,note}:
+  1,"a,b"
+  2,"c,d"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (string)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (string))))))))
+
+==================
+spec decode: delimiters - does not require quoting commas with tab delimiter
+==================
+
+items[2	]{id	note}:
+  1	a,b
+  2	c,d
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string))))))))
+
+==================
+spec decode: delimiters - does not require quoting commas in object values
+==================
+
+note: a,b
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string))))))
+
+==================
+spec decode: delimiters - object values in list items follow document delimiter
+==================
+
+items[2	]:
+  - status: a,b
+  - status: c,d
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string)))))))))))
+
+==================
+spec decode: delimiters - object values with comma must be quoted when document delimiter is comma
+==================
+
+items[2]:
+  - status: "a,b"
+  - status: "c,d"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (string))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (inline_values
+                    (value
+                      (string))))))))))))
+
+==================
+spec decode: delimiters - parses nested array values containing pipe delimiter
+==================
+
+pairs[1|]:
+  - [2|]: a|"b|c"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (array_body
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number)
+                  delimiter: (delimiter))
+                (inline_values
+                  (value
+                    (unquoted_string))
+                  (value
+                    (string)))))))))))
+
+==================
+spec decode: delimiters - parses nested array values containing tab delimiter
+==================
+
+pairs[1	]:
+  - [2	]: a	"b\tc"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (array_body
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number)
+                  delimiter: (delimiter))
+                (inline_values
+                  (value
+                    (unquoted_string))
+                  (value
+                    (string
+                      (escape_sequence))))))))))))
+
+==================
+spec decode: delimiters - preserves quoted ambiguity with pipe delimiter
+==================
+
+items[3|]: "true"|"42"|"-3.14"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (string))
+          (value
+            (string))
+          (value
+            (string)))))))
+
+==================
+spec decode: delimiters - preserves quoted ambiguity with tab delimiter
+==================
+
+items[3	]: "true"	"42"	"-3.14"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (string))
+          (value
+            (string))
+          (value
+            (string)))))))
+
+==================
+spec decode: delimiters - parses structural-looking strings when quoted with pipe delimiter
+==================
+
+items[3|]: "[5]"|"{key}"|"- item"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (string))
+          (value
+            (string))
+          (value
+            (string)))))))
+
+==================
+spec decode: delimiters - parses structural-looking strings when quoted with tab delimiter
+==================
+
+items[3	]: "[5]"	"{key}"	"- item"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (string))
+          (value
+            (string))
+          (value
+            (string)))))))
+
+==================
+spec decode: delimiters - parses tabular headers with keys containing the active delimiter
+==================
+
+items[2|]{"a|b"}:
+  1
+  2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter)
+          fields: (field_list
+            (field_name
+              (string))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number)))
+          (tabular_row
+            (value
+              (number))))))))
+
+==================
+spec decode: indentation-errors - accepts correct indentation with custom indent size (4 spaces with indent=4)
+==================
+
+a:
+    b: 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (value
+              (number))))))))
+
+==================
+spec decode: indentation-errors - accepts tabs in quoted string values
+==================
+
+text: "hello	world"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec decode: indentation-errors - accepts tabs in quoted keys
+==================
+
+"key	tab": value
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (unquoted_string))))))
+
+==================
+spec decode: indentation-errors - accepts tabs in quoted array elements
+==================
+
+items[2]: "a	b","c	d"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (string))
+          (value
+            (string)))))))
+
+==================
+spec decode: indentation-errors - accepts non-multiple indentation when strict=false
+==================
+
+a:
+   b: 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (value
+              (number))))))))
+
+==================
+spec decode: indentation-errors - accepts deeply nested non-multiples when strict=false
+==================
+
+a:
+   b:
+     c: 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (object
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (number))))))))))
+
+==================
+spec decode: indentation-errors - parses empty lines without validation errors
+==================
+
+a: 1
+
+b: 2
+
+---
+
+(source_file
+  (ERROR
+    (document
+      (object
+        (pair
+          key: (key
+            (unquoted_key))
+          value: (value
+            (number))))))
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: indentation-errors - parses root-level content (0 indentation) as always valid
+==================
+
+a: 1
+b: 2
+c: 3
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: indentation-errors - parses lines with only spaces without validation if empty
+==================
+
+a: 1
+   
+b: 2
+
+---
+
+(source_file
+  (ERROR
+    (document
+      (object
+        (pair
+          key: (key
+            (unquoted_key))
+          value: (value
+            (number))))))
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: numbers - parses number with trailing zeros in fractional part
+==================
+
+value: 1.5000
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: numbers - parses negative number with positive exponent
+==================
+
+value: -1E+03
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: numbers - parses lowercase exponent
+==================
+
+value: 2.5e2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: numbers - parses uppercase exponent with negative sign
+==================
+
+value: 3E-02
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: numbers - parses negative zero as zero
+==================
+
+value: -0
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: numbers - parses negative zero with fractional part
+==================
+
+value: -0.0
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: numbers - parses array with mixed numeric forms
+==================
+
+nums[5]: 42,-1E+03,1.5000,-0,2.5e2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (number))
+          (value
+            (number))
+          (value
+            (number))
+          (value
+            (number))
+          (value
+            (number)))))))
+
+==================
+spec decode: numbers - treats leading zero as string not number
+==================
+
+value: 05
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string))))))
+
+==================
+spec decode: numbers - parses very small exponent
+==================
+
+value: 1e-10
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: numbers - parses integer with positive exponent
+==================
+
+value: 5E+00
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: numbers - parses zero with exponent as number
+==================
+
+value: 0e1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: numbers - parses negative zero with exponent as number
+==================
+
+value: -0e1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: numbers - parses exponent notation
+==================
+
+1e6
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec decode: numbers - parses exponent notation with uppercase E
+==================
+
+1E+6
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec decode: numbers - parses negative exponent notation
+==================
+
+-1e-3
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec decode: numbers - treats unquoted leading-zero number as string
+==================
+
+05
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec decode: numbers - treats unquoted multi-leading-zero as string
+==================
+
+007
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec decode: numbers - treats unquoted octal-like as string
+==================
+
+0123
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec decode: numbers - treats leading-zero in object value as string
+==================
+
+a: 05
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string))))))
+
+==================
+spec decode: numbers - treats leading-zeros in array as strings
+==================
+
+nums[3]: 05,007,0123
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec decode: numbers - treats unquoted negative leading-zero number as string
+==================
+
+-05
+
+---
+
+(source_file
+  (document
+    (value
+      (number)))
+  (ERROR
+    (number)))
+
+==================
+spec decode: numbers - treats negative leading-zeros in array as strings
+==================
+
+nums[2]: -05,-007
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        (ERROR
+          (inline_values
+            (value
+              (number))
+            (ERROR
+              (number))
+            (value
+              (number))))
+        value: (inline_values
+          (value
+            (unquoted_string)))))))
+
+==================
+spec decode: objects - parses objects with primitive values
+==================
+
+id: 123
+name: Ada
+active: true
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (boolean))))))
+
+==================
+spec decode: objects - parses null values in objects
+==================
+
+id: 123
+value: null
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (null))))))
+
+==================
+spec decode: objects - parses empty nested object header
+==================
+
+user:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))))))
+
+==================
+spec decode: objects - parses quoted object value with colon
+==================
+
+note: "a:b"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec decode: objects - parses quoted object value with comma
+==================
+
+note: "a,b"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec decode: objects - parses quoted object value with newline escape
+==================
+
+text: "line1\nline2"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string
+            (escape_sequence)))))))
+
+==================
+spec decode: objects - parses quoted object value with escaped quotes
+==================
+
+text: "say \"hello\""
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string
+            (escape_sequence)
+            (escape_sequence)))))))
+
+==================
+spec decode: objects - parses quoted object value with leading/trailing spaces
+==================
+
+text: " padded "
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec decode: objects - parses quoted object value with only spaces
+==================
+
+text: "  "
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec decode: objects - parses quoted string value that looks like true
+==================
+
+v: "true"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec decode: objects - parses quoted string value that looks like integer
+==================
+
+v: "42"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec decode: objects - parses quoted string value that looks like negative decimal
+==================
+
+v: "-7.5"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec decode: objects - parses quoted key with colon
+==================
+
+"order:id": 7
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number))))))
+
+==================
+spec decode: objects - parses quoted key with brackets
+==================
+
+"[index]": 5
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number))))))
+
+==================
+spec decode: objects - parses quoted key with braces
+==================
+
+"{key}": 5
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number))))))
+
+==================
+spec decode: objects - parses quoted key with comma
+==================
+
+"a,b": 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number))))))
+
+==================
+spec decode: objects - parses quoted key with spaces
+==================
+
+"full name": Ada
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (unquoted_string))))))
+
+==================
+spec decode: objects - parses quoted key with leading hyphen
+==================
+
+"-lead": 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number))))))
+
+==================
+spec decode: objects - parses quoted key with leading and trailing spaces
+==================
+
+" a ": 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number))))))
+
+==================
+spec decode: objects - parses quoted numeric key
+==================
+
+"123": x
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (unquoted_string))))))
+
+==================
+spec decode: objects - parses quoted empty string key
+==================
+
+"": 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number))))))
+
+==================
+spec decode: objects - parses dotted keys as identifiers
+==================
+
+user.name: Ada
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string))))))
+
+==================
+spec decode: objects - parses underscore-prefixed keys
+==================
+
+_private: 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: objects - parses underscore-containing keys
+==================
+
+user_name: 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: objects - unescapes newline in key
+==================
+
+"line\nbreak": 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string
+            (escape_sequence)))
+        value: (value
+          (number))))))
+
+==================
+spec decode: objects - unescapes tab in key
+==================
+
+"tab\there": 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string
+            (escape_sequence)))
+        value: (value
+          (number))))))
+
+==================
+spec decode: objects - unescapes quotes in key
+==================
+
+"he said \"hi\"": 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string
+            (escape_sequence)
+            (escape_sequence)))
+        value: (value
+          (number))))))
+
+==================
+spec decode: objects - parses deeply nested objects with indentation
+==================
+
+a:
+  b:
+    c: deep
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (object
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (unquoted_string))))))))))
+
+==================
+spec decode: path-expansion - expands dotted key to nested object in safe mode
+==================
+
+a.b.c: 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: path-expansion - expands dotted key with inline array
+==================
+
+data.meta.items[2]: a,b
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec decode: path-expansion - expands dotted key with tabular array
+==================
+
+a.b.items[2]{id,name}:
+  1,A
+  2,B
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))))))))
+
+==================
+spec decode: path-expansion - preserves literal dotted keys when expansion is off
+==================
+
+user.name: Ada
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string))))))
+
+==================
+spec decode: path-expansion - expands and deep-merges preserving document-order insertion
+==================
+
+a.b.c: 1
+a.b.d: 2
+a.e: 3
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: path-expansion - applies LWW when strict=false (primitive overwrites expanded object)
+==================
+
+a.b: 1
+a: 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: path-expansion - applies LWW when strict=false (expanded object overwrites primitive)
+==================
+
+a: 1
+a.b: 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec decode: path-expansion - preserves quoted dotted key as literal when expandPaths=safe
+==================
+
+a.b: 1
+"c.d": 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number)))
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number))))))
+
+==================
+spec decode: path-expansion - preserves non-IdentifierSegment keys as literals
+==================
+
+full-name.x: 1
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string)))
+  (ERROR
+    (number)))
+
+==================
+spec decode: path-expansion - expands keys creating empty nested objects
+==================
+
+a.b.c:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))))))
+
+==================
+spec decode: primitives - parses safe unquoted string
+==================
+
+hello
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec decode: primitives - parses unquoted string with underscore and numbers
+==================
+
+Ada_99
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec decode: primitives - parses empty quoted string
+==================
+
+""
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec decode: primitives - parses quoted string with newline escape
+==================
+
+"line1\nline2"
+
+---
+
+(source_file
+  (document
+    (value
+      (string
+        (escape_sequence)))))
+
+==================
+spec decode: primitives - parses quoted string with tab escape
+==================
+
+"tab\there"
+
+---
+
+(source_file
+  (document
+    (value
+      (string
+        (escape_sequence)))))
+
+==================
+spec decode: primitives - parses quoted string with carriage return escape
+==================
+
+"return\rcarriage"
+
+---
+
+(source_file
+  (document
+    (value
+      (string
+        (escape_sequence)))))
+
+==================
+spec decode: primitives - parses quoted string with backslash escape
+==================
+
+"C:\\Users\\path"
+
+---
+
+(source_file
+  (document
+    (value
+      (string
+        (escape_sequence)
+        (escape_sequence)))))
+
+==================
+spec decode: primitives - parses quoted string with escaped quotes
+==================
+
+"say \"hello\""
+
+---
+
+(source_file
+  (document
+    (value
+      (string
+        (escape_sequence)
+        (escape_sequence)))))
+
+==================
+spec decode: primitives - parses Unicode string
+==================
+
+café
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec decode: primitives - parses Chinese characters
+==================
+
+你好
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec decode: primitives - parses emoji
+==================
+
+🚀
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec decode: primitives - parses string with emoji and spaces
+==================
+
+hello 👋 world
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec decode: primitives - parses positive integer
+==================
+
+42
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec decode: primitives - parses decimal number
+==================
+
+3.14
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec decode: primitives - parses negative integer
+==================
+
+-7
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec decode: primitives - parses true
+==================
+
+true
+
+---
+
+(source_file
+  (document
+    (value
+      (boolean))))
+
+==================
+spec decode: primitives - parses false
+==================
+
+false
+
+---
+
+(source_file
+  (document
+    (value
+      (boolean))))
+
+==================
+spec decode: primitives - parses null
+==================
+
+null
+
+---
+
+(source_file
+  (document
+    (value
+      (null))))
+
+==================
+spec decode: primitives - respects ambiguity quoting for true
+==================
+
+"true"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec decode: primitives - respects ambiguity quoting for false
+==================
+
+"false"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec decode: primitives - respects ambiguity quoting for null
+==================
+
+"null"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec decode: primitives - respects ambiguity quoting for integer
+==================
+
+"42"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec decode: primitives - respects ambiguity quoting for negative decimal
+==================
+
+"-3.14"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec decode: primitives - respects ambiguity quoting for scientific notation
+==================
+
+"1e-6"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec decode: primitives - respects ambiguity quoting for leading-zero
+==================
+
+"05"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec decode: root-form - parses empty document as empty object
+==================
+
+
+---
+
+(source_file)
+
+==================
+spec decode: whitespace - tolerates spaces around commas in inline arrays
+==================
+
+tags[3]: a , b , c
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec decode: whitespace - tolerates spaces around pipes in inline arrays
+==================
+
+tags[3|]: a | b | c
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec decode: whitespace - tolerates spaces around tabs in inline arrays
+==================
+
+tags[3	]: a 	 b 	 c
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec decode: whitespace - tolerates leading and trailing spaces in tabular row values
+==================
+
+items[2]{id,name}:
+  1 , Alice 
+  2 , Bob 
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))))))))
+
+==================
+spec decode: whitespace - tolerates spaces around delimiters with quoted values
+==================
+
+items[3]: "a" , "b" , "c"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (string))
+          (value
+            (string))
+          (value
+            (string)))))))
+
+==================
+spec decode: whitespace - parses empty tokens as empty string
+==================
+
+items[3]: a,,c
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (ERROR)
+          (value
+            (unquoted_string)))))))

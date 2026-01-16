@@ -140,3 +140,83 @@ Key - quoted key in tabular header
           (tabular_row
             (value (number))
             (value (unquoted_string))))))))
+
+==================
+Key - dotted key with array header (key folding style)
+==================
+
+user.preferences.tags[2]: red,green
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value (unquoted_string))
+          (value (unquoted_string)))))))
+
+==================
+Key - quoted dotted key with non-identifier segment
+==================
+
+"user.first-name": Ada
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (string))
+        value: (value (unquoted_string))))))
+
+==================
+Key - dotted keys with shared prefix (path expansion merge style)
+==================
+
+user.profile.name: Ada
+user.profile.title: Engineer
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string)))
+      (pair
+        key: (key (unquoted_key))
+        value: (value (unquoted_string))))))
+
+==================
+Key - mixed dotted keys and nested objects
+==================
+
+user:
+  profile.name: Ada
+  profile:
+    title: Engineer
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key (unquoted_key))
+        value: (object
+          (pair
+            key: (key (unquoted_key))
+            value: (value (unquoted_string)))
+          (pair
+            key: (key (unquoted_key))
+            value: (object
+              (pair
+                key: (key (unquoted_key))
+                value: (value (unquoted_string)))))))))))
