@@ -4,7 +4,7 @@ endif
 
 LANGUAGE_NAME := tree-sitter-toon
 HOMEPAGE_URL := https://github.com/3swordman/tree-sitter-toon
-VERSION := 0.1.5
+VERSION := 0.2.0
 
 # repository
 SRC_DIR := src

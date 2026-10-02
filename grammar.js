@@ -2,384 +2,140 @@
  * @file TOON (Token-Oriented Object Notation) grammar for tree-sitter
  * @author 3swordman <yyuxiaoran@qq.com>
  * @license MIT
- * @see {@link https://github.com/toon-format/spec TOON Specification v2.0}
+ * @see {@link https://github.com/toon-format/spec/blob/v4.0.0/SPEC.md TOON Specification v4.0}
  */
 
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
+const delimiters = { comma: ",", pipe: "|", tab: "\t" };
+const variants = (prefix) => Object.keys(delimiters).map((name) => `_${prefix}_${name}`);
+const choose = ($, prefix) => choice(...variants(prefix).map((name) => $[name]));
+const scopedRules = {};
+
+for (const [name, separator] of Object.entries(delimiters)) {
+  const rule = (prefix) => `_${prefix}_${name}`;
+  const fields = ($) => alias($[rule("fields")], $.field_list);
+  const cell = ($) => alias($[rule("cell")], $.value);
+  const firstCell = ($) => alias($[rule("first_cell")], $.value);
+  const header = ($) => alias($[rule("header")], $.header);
+  const tableHeader = ($) => alias($[rule("table_header")], $.header);
+  const keyedHeader = ($) => alias($[rule("keyed_header")], $.keyed_header);
+  const body = ($) => alias($[rule("body")], $.array_body);
+  const inline = ($) => alias($[rule("inline")], $.inline_values);
+
+  // Each header selects its own delimiter; a missing marker means comma.
+  scopedRules[rule("header")] = ($) => seq(
+    "[", field("length", alias($.length, $.number)),
+    ...(name === "comma" ? [] : [field("delimiter", alias(token.immediate(separator), $.delimiter))]),
+    token.immediate("]"),
+  );
+  scopedRules[rule("table_header")] = ($) => seq(
+    $[rule("header")], token.immediate("{"), field("fields", fields($)), "}",
+  );
+  scopedRules[rule("keyed_header")] = ($) => seq(
+    "[", field("length", alias($.length, $.number)), token.immediate(":"),
+    ...(name === "comma" ? [] : [field("delimiter", alias(token.immediate(separator), $.delimiter))]),
+    token.immediate("]"), token.immediate("{"), field("fields", fields($)), "}",
+  );
+  scopedRules[rule("fields")] = ($) => seq(
+    alias($[rule("field")], $.field_name),
+    repeat(seq(separator, alias($[rule("field")], $.field_name))),
+  );
+  scopedRules[rule("field")] = ($) => seq(
+    choice(alias(/[A-Za-z_][A-Za-z0-9_.]*/, $.unquoted_key), $.string),
+    optional(seq(token.immediate("{"), field("fields", fields($)), "}")),
+  );
+  scopedRules[rule("cell")] = ($) => choice(
+    $.null, $.boolean, $.number, $.string,
+    alias($[rule("cell_string")], $.unquoted_string),
+  );
+  scopedRules[rule("first_cell")] = ($) => choice(
+    $.null, $.boolean, $.number, $.string,
+    alias($[rule("first_cell_string")], $.unquoted_string),
+  );
+  // Empty cells have no value node; separators still preserve their positions.
+  scopedRules[rule("inline")] = ($) => choice(
+    seq(cell($), repeat(seq(separator, optional(cell($))))),
+    seq(separator, optional(cell($)), repeat(seq(separator, optional(cell($))))),
+  );
+  scopedRules[rule("table_row")] = ($) => seq(
+    choice(
+      seq(firstCell($), repeat(seq(separator, optional(cell($))))),
+      seq(separator, optional(cell($)), repeat(seq(separator, optional(cell($))))),
+    ), $._newline,
+  );
+  scopedRules[rule("keyed_row")] = ($) => seq(
+    field("key", alias($._entry_key_rule, $.key)), ":", optional(field("values", inline($))), $._newline,
+  );
+  scopedRules[rule("keyed_body")] = ($) => repeat1(alias($[rule("keyed_row")], $.keyed_row));
+  scopedRules[rule("body")] = ($) => repeat1(choice(
+    $.row, alias($[rule("table_row")], $.tabular_row),
+  ));
+  scopedRules[rule("array_content")] = ($) => prec.right(choice(
+    seq(header($), token.immediate(":"), choice(
+      seq(field("value", inline($)), $._newline),
+      seq($._newline, optional(seq($._indent, field("value", body($)), $._dedent))),
+    )),
+    seq(tableHeader($), token.immediate(":"), $._newline,
+      optional(seq($._indent, field("value", alias(repeat1(alias($[rule("table_row")], $.tabular_row)), $.array_body)), $._dedent))),
+  ));
+  scopedRules[rule("keyed_content")] = ($) => prec.right(seq(
+    keyedHeader($), token.immediate(":"), $._newline,
+    optional(seq($._indent, field("value", alias($[rule("keyed_body")], $.keyed_body)), $._dedent)),
+  ));
+}
+
 module.exports = grammar({
   name: "toon",
-
-  externals: ($) => [$._indent, $._dedent, $.comment],
-
-  conflicts: ($) => [[$.pair], [$.array_value, $.value]],
-
-  extras: ($) => [/[ \t]/, $.comment],
-
+  externals: ($) => [
+    $._indent, $._dedent, $.comment, $._newline,
+    $.unquoted_key, $.unquoted_string,
+    ...variants("cell_string").map((name) => $[name]),
+    ...variants("first_cell_string").map((name) => $[name]), $._list_marker, $._blank_line, $._entry_key,
+  ],
+  extras: ($) => [/ /, $.comment, $._blank_line],
+  conflicts: ($) => [],
   rules: {
-    source_file: ($) =>
-      seq(optional($._newline), optional($.document), optional($._newline)),
-
-    document: ($) => choice($.array, $.object, $.value),
-
-    // Objects - root level or nested
-    object: ($) =>
-      choice(
-        // Root level object (at least one pair)
-        prec.left(1, repeat1($.pair)),
-        // Nested object (with indent/dedent)
-        prec(2, seq($._indent, repeat1($.pair), $._dedent)),
-      ),
-
-    pair: ($) =>
-      seq(
-        field("key", $.key),
-        choice(
-          // Pair with header (array)
-          seq(
-            $.header,
-            token.immediate(":"),
-            optional(/[ \t]+/),
-            choice(
-              // Inline array
-              seq(field("value", $.inline_values), $._newline),
-              // Newline followed by indented array body
-              seq(
-                $._newline,
-                $._indent,
-                field("value", $.array_body),
-                $._dedent,
-              ),
-              // Empty array - just newline
-              prec.dynamic(-1, $._newline),
-            ),
-          ),
-          // Pair without header - primitive value
-          seq(
-            token.immediate(":"),
-            optional(/[ \t]+/),
-            field("value", $.value),
-            $._newline,
-          ),
-          // Pair without header - nested object (may be empty)
-          seq(
-            token.immediate(":"),
-            $._newline,
-            optional(field("value", $.object)),
-          ),
-        ),
-      ),
-
+    source_file: ($) => seq(repeat($._newline), optional(seq($.document, repeat($._newline)))),
+    document: ($) => choice($.array, $.keyed_object, $.object, $.value),
+    object: ($) => choice(
+      prec.left(1, repeat1($.pair)),
+      prec(2, seq($._indent, repeat1($.pair), $._dedent)),
+    ),
+    pair: ($) => seq(field("key", $.key), $._pair_content),
+    _pair_content: ($) => choice(
+      choose($, "array_content"), choose($, "keyed_content"),
+      seq(token.immediate(":"), field("value", $.value), $._newline),
+      prec.right(seq(token.immediate(":"), $._newline, optional(field("value", $.object)))),
+    ),
     key: ($) => choice($.unquoted_key, $.string),
-
-    unquoted_key: ($) => /[A-Za-z_][A-Za-z0-9_.]*/,
-
-    // Arrays (root level)
-    array: ($) =>
-      seq(
-        $.header,
-        ":",
-        optional(/[ \t]+/),
-        choice(
-          // Inline values
-          seq($.inline_values, $._newline),
-          // List/tabular body (indented)
-          seq($._newline, $._indent, $.array_body, $._dedent),
-          // Empty array
-          prec.dynamic(-1, $._newline),
-        ),
-      ),
-
-    // Arrays used as list item values (e.g., "- [2]: 1,2")
-    list_array: ($) =>
-      seq(
-        $.header,
-        ":",
-        optional(/[ \t]+/),
-        choice(
-          seq($.inline_values, $._newline),
-          seq($._newline, $._indent, $.array_body, $._dedent),
-          prec.dynamic(-1, $._newline),
-        ),
-      ),
-
-    array_body: ($) => repeat1(choice(prec(2, $.row), prec(1, $.tabular_row))),
-
-    header: ($) =>
-      seq(
-        "[",
-        field("length", $.number),
-        optional(field("delimiter", $.delimiter)),
-        "]",
-        optional(seq(token.immediate("{"), field("fields", $.field_list), "}")),
-      ),
-
-    delimiter: ($) => token.immediate(choice("\t", "|")),
-
-    inline_values: ($) =>
-      seq(
-        alias($.array_value, $.value),
-        repeat(
-          seq(
-            choice(",", "|", "\t"),
-            optional(/[ \t]*/),
-            alias($.array_value, $.value),
-          ),
-        ),
-      ),
-
-    // Values used in array contexts (inline arrays and list items)
-    array_value: ($) =>
-      choice(
-        $.null,
-        $.boolean,
-        $.number,
-        $.string,
-        alias($.array_unquoted_string, $.unquoted_string),
-      ),
-
-    field_list: ($) =>
-      seq($.field_name, repeat(seq(choice(",", "|", "\t"), $.field_name))),
-
-    field_name: ($) => choice($.unquoted_key, $.string),
-
-    row: ($) => choice(prec(2, $.value_row), prec(1, $.object_row)),
-
-    value_row: ($) =>
-      choice(
-        seq(token(seq("-", /[ \t]+/)), $.list_array),
-        seq(token(seq("-", /[ \t]+/)), $.row_values, $._newline),
-      ),
-
-    row_values: ($) =>
-      choice(prec(2, $.delimited_values), prec(1, $.single_value)),
-
+    _entry_key_rule: ($) => choice(alias($._entry_key, $.unquoted_key), $.string),
+    array: ($) => choose($, "array_content"),
+    keyed_object: ($) => choose($, "keyed_content"),
+    list_array: ($) => choose($, "array_content"),
+    row: ($) => choice(prec(2, $.object_row), prec(1, $.value_row)),
+    value_row: ($) => seq(alias($._list_marker, "-"), choice(
+      $.list_array, seq($.row_values, $._newline),
+    )),
+    row_values: ($) => $.single_value,
     single_value: ($) => $.value,
-
-    delimited_values: ($) =>
-      seq(
-        alias($.array_value, $.value),
-        repeat1(
-          seq(
-            choice(",", "|", "\t"),
-            optional(/[ \t]*/),
-            alias($.array_value, $.value),
-          ),
-        ),
-      ),
-
-    tabular_row: ($) =>
-      prec(
-        -1,
-        seq(
-          alias($.tabular_value, $.value),
-          repeat(
-            seq(
-              choice(",", "|", "\t"),
-              optional(/[ \t]*/),
-              alias($.tabular_value, $.value),
-            ),
-          ),
-          $._newline,
-        ),
-      ),
-
-    tabular_value: ($) =>
-      choice(
-        $.null,
-        $.boolean,
-        $.number,
-        $.string,
-        alias($.array_unquoted_string, $.unquoted_string),
-      ),
-
-    object_row: ($) =>
-      choice(
-        // Object with first field on hyphen line (simple value)
-        prec(
-          2,
-          seq(
-            token(seq("-", /[ \t]+/)),
-            alias($.object_with_first_field, $.object),
-          ),
-        ),
-        // Object with all fields indented (no field on hyphen line)
-        prec(1, seq("-", $._newline, $.object)),
-      ),
-
-    object_with_first_field: ($) =>
-      prec.right(
-        seq(
-          alias($.first_field, $.pair),
-          optional(seq($._indent, repeat($.pair), $._dedent)),
-        ),
-      ),
-
-    first_field: ($) =>
-      prec.right(
-        choice(
-          // Field with header (array) followed by inline values
-          prec(
-            3,
-            seq(
-              field("key", $.key),
-              $.header,
-              ":",
-              /[ \t]+/,
-              field("value", $.inline_values),
-              $._newline,
-            ),
-          ),
-          // Field with header (array) followed by indented body
-          prec(
-            2,
-            seq(
-              field("key", $.key),
-              $.header,
-              ":",
-              $._newline,
-              $._indent,
-              field("value", $.array_body),
-              $._dedent,
-            ),
-          ),
-          // Field with header (array) - empty array
-          prec(1, seq(field("key", $.key), $.header, ":", $._newline)),
-          // Field without header - nested object
-          prec(
-            2,
-            seq(field("key", $.key), ":", $._newline, field("value", $.object)),
-          ),
-          // Field without header - inline values (delimited primitives)
-          prec(
-            2,
-            seq(
-              field("key", $.key),
-              ":",
-              /[ \t]+/,
-              field("value", $.inline_values),
-              $._newline,
-            ),
-          ),
-          // Field without header - single primitive value
-          prec(
-            1,
-            seq(
-              field("key", $.key),
-              ":",
-              /[ \t]+/,
-              field("value", $.value),
-              $._newline,
-            ),
-          ),
-        ),
-      ),
-
-    // Values
-    value: ($) =>
-      choice(
-        $.string,
-        $.null,
-        $.boolean,
-        $.number,
-        $.unquoted_string,
-        alias($.unquoted_key, $.unquoted_string),
-      ),
-
-    // Unquoted strings: cannot start with -, and cannot contain : " [ ] { } \n \r or have leading/trailing space
-    // Note: Delimiters (comma, pipe, tab) are allowed in unquoted strings for object values (no array header)
-    // They are only special within array inline values/tabular rows (where splitting occurs)
-    // This pattern explicitly excludes strings that would be valid numbers (those use the number rule)
-    unquoted_string: ($) =>
-      token(
-        choice(
-          // Starts with non-digit (but not -), anything after (excluding only structural chars, not delimiters)
-          seq(
-            /[^\s:"\[\]{}\n\r\-0-9]/,
-            optional(/[^\n\r:"\[\]{}]+/),
-            optional(/[^\s:"\[\]{}\n\r]/),
-          ),
-          // Starts with "0" followed by digits (forbidden leading zeros - must be string)
-          seq(
-            "0",
-            /[0-9]/,
-            optional(/[^\n\r:"\[\]{}]*/),
-            optional(/[^\s:"\[\]{}\n\r]/),
-          ),
-          // Numeric-like patterns that aren't valid numbers (e.g., "1.2.3", "16:9")
-          // These contain colons or multiple dots that disqualify them as numbers
-          seq(
-            /[0-9]/,
-            /[0-9.]*/,
-            choice(
-              seq(":", /[^\n\r"\[\]{}]*/), // Contains colon (e.g., "16:9")
-              seq(".", /[0-9]+/, ".", /[^\n\r"\[\]{}]*/), // Multiple dots (e.g., "1.2.3")
-            ),
-            optional(/[^\s:"\[\]{}\n\r]/),
-          ),
-          // Starts with digit, has non-number chars in middle/end
-          seq(
-            /[0-9]/,
-            /[^\n\r:"\[\]{}]*[^\s:"\[\]{}\n\r0-9eE+.\-]/,
-            optional(/[^\n\r:"\[\]{}]*/),
-            optional(/[^\s:"\[\]{}\n\r]/),
-          ),
-        ),
-      ),
-
-    // Array unquoted strings: used in inline arrays and tabular rows where delimiters are special
-    // Must exclude comma, pipe, and tab since those are used to split values
-    array_unquoted_string: ($) =>
-      token(
-        choice(
-          // Starts with non-digit (but not -), anything after (excluding delimiters)
-          seq(
-            /[^\s:"\[\]{},|\t\n\r\-0-9]/,
-            optional(/[^\n\r:"\[\]{},|\t]+/),
-            optional(/[^\s:"\[\]{},|\t\n\r]/),
-          ),
-          // Starts with "0" followed by digits (forbidden leading zeros - must be string)
-          seq(
-            "0",
-            /[0-9]/,
-            optional(/[^\n\r:"\[\]{},|\t]*/),
-            optional(/[^\s:"\[\]{},|\t\n\r]/),
-          ),
-          // Starts with digit, has non-number chars in middle/end (excluding delimiters)
-          seq(
-            /[0-9]/,
-            /[^\n\r:"\[\]{},|\t]*[^\s:"\[\]{},|\t\n\r0-9eE+.\-]/,
-            optional(/[^\n\r:"\[\]{},|\t]*/),
-            optional(/[^\s:"\[\]{},|\t\n\r]/),
-          ),
-        ),
-      ),
-
+    object_row: ($) => choice(
+      seq(alias($._list_marker, "-"), alias($.object_with_first_field, $.object)),
+      prec.right(seq(alias($._list_marker, "-"), $._newline, optional($.object))),
+    ),
+    object_with_first_field: ($) => prec.right(seq(
+      alias($.first_field, $.pair), optional(seq($._indent, repeat1($.pair), $._dedent)),
+    )),
+    first_field: ($) => seq(field("key", $.key), $._pair_content),
+    value: ($) => choice($.string, $.null, $.boolean, $.number, $.empty_array, $.unquoted_string),
+    empty_array: ($) => "[]",
+    length: ($) => token.immediate(choice("0", /[1-9][0-9]*/)),
     null: ($) => "null",
-
     boolean: ($) => choice("true", "false"),
-
-    number: ($) =>
-      token(
-        seq(
-          optional("-"),
-          choice("0", seq(/[1-9]/, repeat(/[0-9]/))),
-          optional(seq(".", repeat1(/[0-9]/))),
-          optional(seq(/[eE]/, optional(/[+-]/), repeat1(/[0-9]/))),
-        ),
-      ),
-
-    string: ($) =>
-      seq(
-        '"',
-        repeat(choice(token.immediate(prec(1, /[^"\\]+/)), $.escape_sequence)),
-        '"',
-      ),
-
-    escape_sequence: ($) =>
-      token.immediate(seq("\\", choice('"', "\\", "n", "r", "t"))),
-
-    _newline: ($) => /\r?\n/,
+    number: ($) => token(/-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?/),
+    string: ($) => seq('"', repeat(choice(token.immediate(prec(1, /[^"\\\x00-\x08\x0a-\x1f]+/)), $.escape_sequence)), token.immediate('"')),
+    escape_sequence: ($) => token.immediate(seq("\\", choice('"', "\\", "n", "r", "t", /u([0-9A-Ca-cE-Fe-f][0-9A-Fa-f]{3}|[dD][0-7][0-9A-Fa-f]{2})/))),
+    ...scopedRules,
   },
 });

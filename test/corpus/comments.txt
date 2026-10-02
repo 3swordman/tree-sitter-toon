@@ -261,10 +261,10 @@ Comment lines - tab prefix is not a comment
 
 (source_file
   (ERROR
-    (ERROR
-      (UNEXPECTED '#'))
-    (key
-      (unquoted_key))))
+    (UNEXPECTED '#')
+    (unquoted_key)
+    (UNEXPECTED '\n')))
+
 
 ==================
 Comment lines - space then tab prefix is not a comment
@@ -276,10 +276,9 @@ Comment lines - space then tab prefix is not a comment
 
 (source_file
   (ERROR
-    (ERROR
-      (UNEXPECTED '#'))
-    (key
-      (unquoted_key))))
+    (UNEXPECTED '#')
+    (unquoted_key)
+    (UNEXPECTED '\n')))
 
 ==================
 Comment lines - uninterpreted syntax

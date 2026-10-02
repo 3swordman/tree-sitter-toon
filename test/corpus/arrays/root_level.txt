@@ -11,10 +11,13 @@ Root array with inline values
     (array
       (header
         length: (number))
-      (inline_values
-        (value (unquoted_string))
-        (value (unquoted_string))
-        (value (unquoted_string))))))
+      value: (inline_values
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))))))
 
 ==================
 Root array with field list
@@ -32,15 +35,21 @@ Root array with field list
       (header
         length: (number)
         fields: (field_list
-          (field_name (unquoted_key))
-          (field_name (unquoted_key))))
-      (array_body
+          (field_name
+            (unquoted_key))
+          (field_name
+            (unquoted_key))))
+      value: (array_body
         (tabular_row
-          (value (unquoted_string))
-          (value (number)))
+          (value
+            (unquoted_string))
+          (value
+            (number)))
         (tabular_row
-          (value (unquoted_string))
-          (value (number)))))))
+          (value
+            (unquoted_string))
+          (value
+            (number)))))))
 
 ==================
 Root array with pipe delimiter
@@ -56,10 +65,13 @@ Root array with pipe delimiter
       (header
         length: (number)
         delimiter: (delimiter))
-      (inline_values
-        (value (unquoted_string))
-        (value (unquoted_string))
-        (value (unquoted_string))))))
+      value: (inline_values
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))))))
 
 ==================
 Root empty array

@@ -155,8 +155,6 @@ data[2|]{col1|col2}:
 
 
 ==================
-
-==================
 Comprehensive delimiter variations
 ==================
 

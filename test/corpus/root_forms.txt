@@ -94,10 +94,13 @@ Root form - root array inline
     (array
       (header
         length: (number))
-      (inline_values
-        (value (unquoted_string))
-        (value (unquoted_string))
-        (value (unquoted_string))))))
+      value: (inline_values
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))))))
 
 ==================
 Root form - root array empty
@@ -129,12 +132,18 @@ Root form - root tabular array
       (header
         length: (number)
         fields: (field_list
-          (field_name (unquoted_key))
-          (field_name (unquoted_key))))
-      (array_body
+          (field_name
+            (unquoted_key))
+          (field_name
+            (unquoted_key))))
+      value: (array_body
         (tabular_row
-          (value (number))
-          (value (unquoted_string)))
+          (value
+            (number))
+          (value
+            (unquoted_string)))
         (tabular_row
-          (value (number))
-          (value (unquoted_string)))))))
+          (value
+            (number))
+          (value
+            (unquoted_string)))))))

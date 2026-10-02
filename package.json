@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-toon",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "Toon grammar for tree-sitter",
   "repository": "https://github.com/3swordman/tree-sitter-toon",
   "license": "MIT",

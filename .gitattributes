@@ -2,6 +2,7 @@
 
 # Preserve intentional CRLF and mixed indentation in comment fixtures.
 test/corpus/comments.txt -text -eol whitespace=-space-before-tab,cr-at-eol
+test/corpus/spec/decode.txt -text -eol whitespace=-space-before-tab,-blank-at-eol,cr-at-eol
 
 # Generated source files
 src/*.json linguist-generated

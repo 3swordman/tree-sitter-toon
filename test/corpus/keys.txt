@@ -82,17 +82,27 @@ Key - requires quoting with special chars
   (document
     (object
       (pair
-        key: (key (string))
-        value: (value (unquoted_string)))
+        key: (key
+          (string))
+        value: (value
+          (unquoted_string)))
       (pair
-        key: (key (string))
-        value: (value (unquoted_string)))
+        key: (key
+          (string))
+        value: (value
+          (unquoted_string)))
       (pair
-        key: (key (string))
-        value: (value (unquoted_string)))
+        key: (key
+          (string))
+        value: (value
+          (unquoted_string)))
       (pair
-        key: (key (string))
-        value: (value (unquoted_string))))))
+        key: (key
+          (string
+            (escape_sequence)
+            (escape_sequence)))
+        value: (value
+          (unquoted_string))))))
 
 ==================
 Key - quoted key in array header
@@ -209,14 +219,20 @@ user:
   (document
     (object
       (pair
-        key: (key (unquoted_key))
+        key: (key
+          (unquoted_key))
         value: (object
           (pair
-            key: (key (unquoted_key))
-            value: (value (unquoted_string)))
+            key: (key
+              (unquoted_key))
+            value: (value
+              (unquoted_string)))
           (pair
-            key: (key (unquoted_key))
+            key: (key
+              (unquoted_key))
             value: (object
               (pair
-                key: (key (unquoted_key))
-                value: (value (unquoted_string)))))))))))
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (unquoted_string))))))))))

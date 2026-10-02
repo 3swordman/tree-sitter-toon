@@ -146,10 +146,13 @@ Tab delimiter - root array inline
       (header
         length: (number)
         delimiter: (delimiter))
-      (inline_values
-        (value (unquoted_string))
-        (value (unquoted_string))
-        (value (unquoted_string))))))
+      value: (inline_values
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))))))
 
 ==================
 Tab delimiter - root array tabular
@@ -168,18 +171,27 @@ Tab delimiter - root array tabular
         length: (number)
         delimiter: (delimiter)
         fields: (field_list
-          (field_name (unquoted_key))
-          (field_name (unquoted_key))
-          (field_name (unquoted_key))))
-      (array_body
+          (field_name
+            (unquoted_key))
+          (field_name
+            (unquoted_key))
+          (field_name
+            (unquoted_key))))
+      value: (array_body
         (tabular_row
-          (value (number))
-          (value (unquoted_string))
-          (value (unquoted_string)))
+          (value
+            (number))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))
         (tabular_row
-          (value (number))
-          (value (unquoted_string))
-          (value (unquoted_string)))))))
+          (value
+            (number))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
 
 ==================
 Tab delimiter - empty array

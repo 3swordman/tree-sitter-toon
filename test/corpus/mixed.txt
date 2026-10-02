@@ -125,35 +125,47 @@ level1:
   (document
     (object
       (pair
-        key: (key (unquoted_key))
+        key: (key
+          (unquoted_key))
         value: (object
           (pair
-            key: (key (unquoted_key))
+            key: (key
+              (unquoted_key))
             (header
               length: (number))
             value: (inline_values
-              (value (unquoted_string))
-              (value (unquoted_string))))
+              (value
+                (unquoted_string))
+              (value
+                (unquoted_string))))
           (pair
-            key: (key (unquoted_key))
+            key: (key
+              (unquoted_key))
             value: (object
               (pair
-                key: (key (unquoted_key))
+                key: (key
+                  (unquoted_key))
                 (header
                   length: (number))
                 value: (inline_values
-                  (value (unquoted_string))
-                  (value (unquoted_string))))
+                  (value
+                    (unquoted_string))
+                  (value
+                    (unquoted_string))))
               (pair
-                key: (key (unquoted_key))
+                key: (key
+                  (unquoted_key))
                 value: (object
                   (pair
-                    key: (key (unquoted_key))
+                    key: (key
+                      (unquoted_key))
                     (header
                       length: (number))
                     value: (inline_values
-                      (value (unquoted_string))
-                      (value (unquoted_string))))))))))))))
+                      (value
+                        (unquoted_string))
+                      (value
+                        (unquoted_string)))))))))))))
 
 ==================
 List array with mixed content types

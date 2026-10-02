@@ -127,7 +127,8 @@ matrix[2]:
   (document
     (object
       (pair
-        key: (key (unquoted_key))
+        key: (key
+          (unquoted_key))
         (header
           length: (number))
         value: (array_body
@@ -135,27 +136,35 @@ matrix[2]:
             (object_row
               (object
                 (pair
-                  key: (key (unquoted_key))
+                  key: (key
+                    (unquoted_key))
                   (header
                     length: (number))
                   value: (inline_values
-                    (value (number))
-                    (value (number))
-                    (value (number)))))))
+                    (value
+                      (number))
+                    (value
+                      (number))
+                    (value
+                      (number)))))))
           (row
             (object_row
               (object
                 (pair
-                  key: (key (unquoted_key))
+                  key: (key
+                    (unquoted_key))
                   (header
                     length: (number))
                   value: (inline_values
-                    (value (number))
-                    (value (number))
-                    (value (number)))))))))))))
+                    (value
+                      (number))
+                    (value
+                      (number))
+                    (value
+                      (number))))))))))))
 
 ==================
-List array with delimited values
+List array with delimiter-containing string values
 ==================
 
 data[2]:
@@ -168,24 +177,23 @@ data[2]:
   (document
     (object
       (pair
-        key: (key (unquoted_key))
+        key: (key
+          (unquoted_key))
         (header
           length: (number))
         value: (array_body
           (row
             (value_row
               (row_values
-                (delimited_values
-                  (value (number))
-                  (value (number))
-                  (value (number))))))
+                (single_value
+                  (value
+                    (unquoted_string))))))
           (row
             (value_row
               (row_values
-                (delimited_values
-                  (value (number))
-                  (value (number))
-                  (value (number)))))))))))
+                (single_value
+                  (value
+                    (unquoted_string)))))))))))
 
 ==================
 List array with nested object
