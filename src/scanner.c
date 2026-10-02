@@ -6,7 +6,7 @@
 enum TokenType {
   INDENT,
   DEDENT,
-  NEWLINE,
+  COMMENT,
 };
 
 typedef struct Scanner {
@@ -85,8 +85,37 @@ static bool scan_whitespace(TSLexer *lexer, uint32_t *indent_length) {
   return true;
 }
 
+static bool scan_comment(TSLexer *lexer) {
+  while (!lexer->eof(lexer) && lexer->lookahead != '\n' && lexer->lookahead != '\r') {
+    advance(lexer);
+  }
+  if (lexer->lookahead == '\r') {
+    advance(lexer);
+  }
+  if (lexer->lookahead == '\n') {
+    advance(lexer);
+  }
+  lexer->result_symbol = COMMENT;
+  return true;
+}
+
 bool tree_sitter_toon_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
   Scanner *scanner = (Scanner *)payload;
+
+  bool at_column_zero = lexer->get_column(lexer) == 0;
+  uint32_t leading_spaces = 0;
+
+  // Comments are full lines with only spaces before '#'. Consume their line
+  // ending as well, so they cannot introduce a blank line or alter indentation.
+  if (at_column_zero && valid_symbols[COMMENT]) {
+    while (lexer->lookahead == ' ') {
+      leading_spaces++;
+      skip(lexer);
+    }
+    if (lexer->lookahead == '#') {
+      return scan_comment(lexer);
+    }
+  }
   
   // Track if we've processed newlines
   bool has_newline = false;
@@ -105,8 +134,10 @@ bool tree_sitter_toon_external_scanner_scan(void *payload, TSLexer *lexer, const
     
     // Skip blank lines (lines with only whitespace)
     uint32_t temp_indent = 0;
+    bool has_tab = false;
     while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
       temp_indent++;
+      has_tab |= lexer->lookahead == '\t';
       skip(lexer);
     }
     
@@ -115,14 +146,29 @@ bool tree_sitter_toon_external_scanner_scan(void *payload, TSLexer *lexer, const
       continue;
     }
     
+    if (at_column_zero && !has_tab && lexer->lookahead == '#' && valid_symbols[COMMENT]) {
+      return scan_comment(lexer);
+    }
+
     // Not a blank line, break to process indentation
     break;
   }
   
+  // End of file - emit remaining dedents
+  if (lexer->eof(lexer)) {
+    if (valid_symbols[DEDENT] && scanner->indents.size > 1) {
+      array_pop(&scanner->indents);
+      lexer->result_symbol = DEDENT;
+      scanner->at_line_start = false;
+      return true;
+    }
+    return false;
+  }
+
   // Handle indentation at start of line
-  if (has_newline || lexer->get_column(lexer) == 0) {
+  if (has_newline || at_column_zero) {
     scanner->at_line_start = true;
-    uint32_t indent_length = 0;
+    uint32_t indent_length = has_newline ? 0 : leading_spaces;
     
     // Calculate indentation
     while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
@@ -133,17 +179,6 @@ bool tree_sitter_toon_external_scanner_scan(void *payload, TSLexer *lexer, const
         indent_length = (indent_length + 2) & ~1;
       }
       skip(lexer);
-    }
-    
-    // End of file - emit remaining dedents
-    if (lexer->eof(lexer)) {
-      if (valid_symbols[DEDENT] && scanner->indents.size > 1) {
-        array_pop(&scanner->indents);
-        lexer->result_symbol = DEDENT;
-        scanner->at_line_start = false;
-        return true;
-      }
-      return false;
     }
     
     // Empty line (shouldn't reach here after blank line skipping, but handle it)

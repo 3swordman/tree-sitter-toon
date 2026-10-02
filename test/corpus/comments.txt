@@ -1,0 +1,400 @@
+==================
+Comment lines - empty document
+==================
+
+# just a comment
+   # another
+
+---
+
+(source_file
+  (comment)
+  (comment))
+
+==================
+Comment lines - before and after root value
+==================
+
+# before
+42
+# after
+
+---
+
+(source_file
+  (comment)
+  (document
+    (value
+      (number)))
+  (comment))
+
+==================
+Comment lines - between root pairs
+==================
+
+# before
+a: 1
+   # arbitrary indent
+b: 2
+# after
+
+---
+
+(source_file
+  (comment)
+  (document
+    (object
+      (pair
+        (key
+          (unquoted_key))
+        (value
+          (number)))
+      (comment)
+      (pair
+        (key
+          (unquoted_key))
+        (value
+          (number)))))
+  (comment))
+
+==================
+Comment lines - nested scope ignores comment indentation
+==================
+
+outer:
+# before nested value
+  a: 1
+       # deeply indented
+# at root indentation
+  b: 2
+ # before dedent
+end: 3
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        (key
+          (unquoted_key))
+        (comment)
+        (object
+          (pair
+            (key
+              (unquoted_key))
+            (value
+              (number)))
+          (comment)
+          (comment)
+          (pair
+            (key
+              (unquoted_key))
+            (value
+              (number)))
+          (comment)))
+      (pair
+        (key
+          (unquoted_key))
+        (value
+          (number))))))
+
+==================
+Comment lines - between tabular rows
+==================
+
+users[2]{id,name}:
+# before rows
+  1,Alice
+       # between rows
+  2,Bob
+# after rows
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        (key
+          (unquoted_key))
+        (header
+          (number)
+          (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        (comment)
+        (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string)))
+          (comment)
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))))
+        (comment)))))
+
+==================
+Comment lines - between list items
+==================
+
+items[2]:
+# before items
+  - "one"
+     # between items
+  - "two"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        (key
+          (unquoted_key))
+        (header
+          (number))
+        (comment)
+        (array_body
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value
+                    (string))))))
+          (comment)
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value
+                    (string)))))))))))
+
+==================
+Comment lines - nested list object
+==================
+
+items[1]:
+  - name: Alice
+# between fields
+    age: 30
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        (key
+          (unquoted_key))
+        (header
+          (number))
+        (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  (key
+                    (unquoted_key))
+                  (value
+                    (unquoted_string)))
+                (comment)
+                (pair
+                  (key
+                    (unquoted_key))
+                  (value
+                    (number)))))))))))
+
+==================
+Comment lines - hashes remain ordinary data
+==================
+
+message: hello # world
+hash: #value
+quoted: "# value"
+values[2]: #first,second#
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        (key
+          (unquoted_key))
+        (value
+          (unquoted_string)))
+      (pair
+        (key
+          (unquoted_key))
+        (value
+          (unquoted_string)))
+      (pair
+        (key
+          (unquoted_key))
+        (value
+          (string)))
+      (pair
+        (key
+          (unquoted_key))
+        (header
+          (number))
+        (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+Comment lines - tab prefix is not a comment
+==================
+
+	#data
+
+---
+
+(source_file
+  (ERROR
+    (ERROR
+      (UNEXPECTED '#'))
+    (key
+      (unquoted_key))))
+
+==================
+Comment lines - space then tab prefix is not a comment
+==================
+
+ 	#data
+
+---
+
+(source_file
+  (ERROR
+    (ERROR
+      (UNEXPECTED '#'))
+    (key
+      (unquoted_key))))
+
+==================
+Comment lines - uninterpreted syntax
+==================
+
+# "unterminated [{: \q
+key: value
+
+---
+
+(source_file
+  (comment)
+  (document
+    (object
+      (pair
+        (key
+          (unquoted_key))
+        (value
+          (unquoted_string))))))
+
+==================
+Comment lines - blank line before comment
+==================
+
+a: 1
+
+# middle
+b: 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        (key
+          (unquoted_key))
+        (value
+          (number)))
+      (comment)
+      (pair
+        (key
+          (unquoted_key))
+        (value
+          (number))))))
+
+==================
+Comment lines - inline hash after number is content
+==================
+
+a: 1 # ordinary content
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        (key
+          (unquoted_key))
+        (value
+          (unquoted_string))))))
+
+==================
+Comment lines - CRLF document
+==================
+
+# before
+key: value
+   # after
+
+---
+
+(source_file
+  (comment)
+  (document
+    (object
+      (pair
+        (key
+          (unquoted_key))
+        (value
+          (unquoted_string)))))
+  (comment))
+
+==================
+Comment lines - indented trailing comment closes nested list object
+==================
+
+items[1]:
+  - name: Alice
+    age: 30
+  # trailing
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        (key
+          (unquoted_key))
+        (header
+          (number))
+        (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  (key
+                    (unquoted_key))
+                  (value
+                    (unquoted_string)))
+                (pair
+                  (key
+                    (unquoted_key))
+                  (value
+                    (number)))
+                (comment)))))))))

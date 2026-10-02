@@ -443,10 +443,6 @@
     "named": false
   },
   {
-    "type": "\n",
-    "named": false
-  },
-  {
     "type": "\"",
     "named": false
   },
@@ -469,6 +465,11 @@
   {
     "type": "]",
     "named": false
+  },
+  {
+    "type": "comment",
+    "named": true,
+    "extra": true
   },
   {
     "type": "delimiter",

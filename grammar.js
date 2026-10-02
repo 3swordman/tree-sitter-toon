@@ -11,11 +11,11 @@
 module.exports = grammar({
   name: "toon",
 
-  externals: ($) => [$._indent, $._dedent],
+  externals: ($) => [$._indent, $._dedent, $.comment],
 
   conflicts: ($) => [[$.pair], [$.array_value, $.value]],
 
-  extras: ($) => [/[ \t]/],
+  extras: ($) => [/[ \t]/, $.comment],
 
   rules: {
     source_file: ($) =>
@@ -380,6 +380,6 @@ module.exports = grammar({
     escape_sequence: ($) =>
       token.immediate(seq("\\", choice('"', "\\", "n", "r", "t"))),
 
-    _newline: ($) => "\n",
+    _newline: ($) => /\r?\n/,
   },
 });

@@ -1804,14 +1804,18 @@
       }
     },
     "_newline": {
-      "type": "STRING",
-      "value": "\n"
+      "type": "PATTERN",
+      "value": "\\r?\\n"
     }
   },
   "extras": [
     {
       "type": "PATTERN",
       "value": "[ \\t]"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "comment"
     }
   ],
   "conflicts": [
@@ -1832,6 +1836,10 @@
     {
       "type": "SYMBOL",
       "name": "_dedent"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "comment"
     }
   ],
   "inline": [],

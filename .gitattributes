@@ -1,5 +1,8 @@
 * text=auto eol=lf
 
+# Preserve intentional CRLF and mixed indentation in comment fixtures.
+test/corpus/comments.txt -text -eol whitespace=-space-before-tab,cr-at-eol
+
 # Generated source files
 src/*.json linguist-generated
 src/parser.c linguist-generated

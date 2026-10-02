@@ -40,6 +40,7 @@ tree-sitter parse example.toon
 
 ## Features
 
+- ✅ Full-line comments from TOON spec v4 (§5.1), without changing indentation scopes
 - ✅ All primitive types (null, boolean, number, string)
 - ✅ Unquoted strings with Unicode/emoji support
 - ✅ Objects with indentation-based nesting
@@ -92,7 +93,7 @@ nested:
 
 ## License
 
-MIT
+Licensed under the [MIT License](LICENSE).
 
 ## Links
 
