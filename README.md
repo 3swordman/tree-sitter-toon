@@ -22,7 +22,7 @@ tree = parser.parse(b"name: value")
 
 ```bash
 # Generate parser
-tree-sitter generate
+npm run generate
 
 # Run tests
 tree-sitter test
@@ -82,6 +82,8 @@ python3 test/update_spec_fixtures.py /path/to/toon-format/spec
 ```
 
 Review the generated snapshots and run the checks above after importing.
+`npm run generate` preserves the separately maintained vendored C headers while
+regenerating the parser and syntax metadata for ABI 15.
 
 ## Documentation
 

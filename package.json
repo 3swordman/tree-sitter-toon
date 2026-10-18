@@ -20,6 +20,7 @@
   "files": [
     "LICENSE",
     "grammar.js",
+    "scripts/generate.js",
     "tree-sitter.json",
     "binding.gyp",
     "prebuilds/**",
@@ -46,7 +47,7 @@
     }
   },
   "scripts": {
-    "generate": "tree-sitter generate",
+    "generate": "node scripts/generate.js",
     "install": "node-gyp-build",
     "prestart": "tree-sitter build --wasm",
     "start": "tree-sitter playground",
