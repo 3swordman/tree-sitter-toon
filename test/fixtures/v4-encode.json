@@ -1,0 +1,2210 @@
+{
+  "version": "4.4",
+  "source": "https://github.com/toon-format/spec/tree/d09c3d33e37389345a74bd96981eb96dd9be6c5e/tests/fixtures/encode",
+  "revision": "d09c3d33e37389345a74bd96981eb96dd9be6c5e",
+  "tests": [
+    {
+      "category": "arrays-nested",
+      "name": "quotes strings containing delimiters in nested arrays",
+      "input": {
+        "pairs": [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "c,d",
+            "e:f",
+            "true"
+          ]
+        ]
+      },
+      "expected": "pairs[2]:\n  - [2]: a,b\n  - [3]: \"c,d\",\"e:f\",\"true\"",
+      "specSection": "9.2"
+    },
+    {
+      "category": "arrays-nested",
+      "name": "encodes empty inner arrays",
+      "input": {
+        "pairs": [
+          [],
+          []
+        ]
+      },
+      "expected": "pairs[2]:\n  - [0]:\n  - [0]:",
+      "specSection": "9.2"
+    },
+    {
+      "category": "arrays-nested",
+      "name": "encodes root-level primitive array",
+      "input": [
+        "x",
+        "y",
+        "true",
+        true,
+        10
+      ],
+      "expected": "[5]: x,y,\"true\",true,10",
+      "specSection": "9.1"
+    },
+    {
+      "category": "arrays-nested",
+      "name": "encodes root-level array of uniform objects in tabular form",
+      "input": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        }
+      ],
+      "expected": "[2]{id}:\n  1\n  2",
+      "specSection": "9.3"
+    },
+    {
+      "category": "arrays-nested",
+      "name": "encodes root-level array of non-uniform objects in list form",
+      "input": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2,
+          "name": "Ada"
+        }
+      ],
+      "expected": "[2]:\n  - id: 1\n  - id: 2\n    name: Ada",
+      "specSection": "9.4"
+    },
+    {
+      "category": "arrays-nested",
+      "name": "encodes root-level array mixing primitive, object, and array of objects in list form",
+      "input": [
+        "summary",
+        {
+          "id": 1,
+          "name": "Ada"
+        },
+        [
+          {
+            "id": 2
+          },
+          {
+            "status": "draft"
+          }
+        ]
+      ],
+      "expected": "[3]:\n  - summary\n  - id: 1\n    name: Ada\n  - [2]:\n    - id: 2\n    - status: draft",
+      "specSection": "9.4"
+    },
+    {
+      "category": "arrays-nested",
+      "name": "encodes root-level arrays of arrays",
+      "input": [
+        [
+          1,
+          2
+        ],
+        []
+      ],
+      "expected": "[2]:\n  - [2]: 1,2\n  - [0]:",
+      "specSection": "9.2"
+    },
+    {
+      "category": "arrays-nested",
+      "name": "encodes empty root-level array",
+      "input": [],
+      "expected": "[]",
+      "specSection": "9.1"
+    },
+    {
+      "category": "arrays-nested",
+      "name": "uses list form for arrays mixing primitives and objects",
+      "input": {
+        "items": [
+          1,
+          {
+            "a": 1
+          },
+          "text"
+        ]
+      },
+      "expected": "items[3]:\n  - 1\n  - a: 1\n  - text",
+      "specSection": "9.4"
+    },
+    {
+      "category": "arrays-nested",
+      "name": "uses list form for arrays mixing objects and arrays",
+      "input": {
+        "items": [
+          {
+            "a": 1
+          },
+          [
+            1,
+            2
+          ]
+        ]
+      },
+      "expected": "items[2]:\n  - a: 1\n  - [2]: 1,2",
+      "specSection": "9.4"
+    },
+    {
+      "category": "arrays-nested",
+      "name": "quotes hash-leading string as list item",
+      "input": {
+        "items": [
+          "#x",
+          {
+            "a": 1
+          }
+        ]
+      },
+      "expected": "items[2]:\n  - \"#x\"\n  - a: 1",
+      "specSection": "7.2"
+    },
+    {
+      "category": "arrays-nested",
+      "name": "uses list form for a tabular-eligible array in list-item position",
+      "input": {
+        "a": [
+          [
+            {
+              "x": 1
+            },
+            {
+              "x": 2
+            }
+          ]
+        ]
+      },
+      "expected": "a[1]:\n  - [2]:\n    - x: 1\n    - x: 2",
+      "specSection": "9.4",
+      "note": "A keyless fields-bearing header is valid only at the document root"
+    },
+    {
+      "category": "arrays-nested",
+      "name": "uses list form for an array of arrays in list-item position",
+      "input": [
+        [
+          [
+            1
+          ]
+        ]
+      ],
+      "expected": "[1]:\n  - [1]:\n    - [1]: 1",
+      "specSection": "9.4"
+    },
+    {
+      "category": "arrays-nested",
+      "name": "uses list form for an array mixing primitives and objects in list-item position",
+      "input": {
+        "a": [
+          [
+            1,
+            {
+              "x": 1
+            }
+          ],
+          2
+        ]
+      },
+      "expected": "a[2]:\n  - [2]:\n    - 1\n    - x: 1\n  - 2",
+      "specSection": "9.4"
+    },
+    {
+      "category": "arrays-objects",
+      "name": "uses list form for objects with different fields",
+      "input": {
+        "items": [
+          {
+            "id": 1,
+            "name": "First"
+          },
+          {
+            "id": 2,
+            "name": "Second",
+            "extra": true
+          }
+        ]
+      },
+      "expected": "items[2]:\n  - id: 1\n    name: First\n  - id: 2\n    name: Second\n    extra: true",
+      "specSection": "9.4"
+    },
+    {
+      "category": "arrays-objects",
+      "name": "preserves field order in list items",
+      "input": {
+        "items": [
+          {
+            "nums": [
+              1,
+              2,
+              3
+            ],
+            "name": "Ada"
+          },
+          {
+            "name": "Ada",
+            "nums": [
+              1,
+              2,
+              3
+            ]
+          }
+        ]
+      },
+      "expected": "items[2]:\n  - nums[3]: 1,2,3\n    name: Ada\n  - name: Ada\n    nums[3]: 1,2,3",
+      "specSection": "10"
+    },
+    {
+      "category": "arrays-objects",
+      "name": "uses list form for objects containing arrays of arrays",
+      "input": {
+        "items": [
+          {
+            "matrix": [
+              [
+                1,
+                2
+              ],
+              [
+                3,
+                4
+              ]
+            ],
+            "name": "grid"
+          }
+        ]
+      },
+      "expected": "items[1]:\n  - matrix[2]:\n      - [2]: 1,2\n      - [2]: 3,4\n    name: grid",
+      "specSection": "10"
+    },
+    {
+      "category": "arrays-objects",
+      "name": "uses tabular form for a list-item object's first field, with and without sibling fields",
+      "input": {
+        "items": [
+          {
+            "users": [
+              {
+                "id": 1,
+                "name": "Ada"
+              },
+              {
+                "id": 2,
+                "name": "Bob"
+              }
+            ],
+            "status": "active"
+          },
+          {
+            "users": [
+              {
+                "id": 3,
+                "name": "Cy"
+              },
+              {
+                "id": 4,
+                "name": "Dee"
+              }
+            ]
+          }
+        ]
+      },
+      "expected": "items[2]:\n  - users[2]{id,name}:\n      1,Ada\n      2,Bob\n    status: active\n  - users[2]{id,name}:\n      3,Cy\n      4,Dee",
+      "specSection": "10",
+      "note": "Tabular header on hyphen line with rows at depth +2 and sibling fields at depth +1"
+    },
+    {
+      "category": "arrays-objects",
+      "name": "uses list form for nested object arrays with mismatched keys",
+      "input": {
+        "items": [
+          {
+            "users": [
+              {
+                "id": 1,
+                "name": "Ada"
+              },
+              {
+                "id": 2
+              }
+            ],
+            "status": "active"
+          }
+        ]
+      },
+      "expected": "items[1]:\n  - users[2]:\n      - id: 1\n        name: Ada\n      - id: 2\n    status: active",
+      "specSection": "10"
+    },
+    {
+      "category": "arrays-objects",
+      "name": "places empty arrays on the hyphen line when first and at field depth when later",
+      "input": {
+        "items": [
+          {
+            "data": [],
+            "name": "Ada"
+          },
+          {
+            "name": "Bob",
+            "data": []
+          }
+        ]
+      },
+      "expected": "items[2]:\n  - data: []\n    name: Ada\n  - name: Bob\n    data: []",
+      "specSection": "10"
+    },
+    {
+      "category": "arrays-objects",
+      "name": "uses field order from first object for tabular headers",
+      "input": {
+        "items": [
+          {
+            "a": 1,
+            "b": 2,
+            "c": 3
+          },
+          {
+            "c": 30,
+            "b": 20,
+            "a": 10
+          }
+        ]
+      },
+      "expected": "items[2]{a,b,c}:\n  1,2,3\n  10,20,30",
+      "specSection": "9.3"
+    },
+    {
+      "category": "arrays-objects",
+      "name": "uses list form when one object has nested field",
+      "input": {
+        "items": [
+          {
+            "id": 1,
+            "data": "string"
+          },
+          {
+            "id": 2,
+            "data": {
+              "nested": true
+            }
+          }
+        ]
+      },
+      "expected": "items[2]:\n  - id: 1\n    data: string\n  - id: 2\n    data:\n      nested: true",
+      "specSection": "9.4"
+    },
+    {
+      "category": "arrays-objects",
+      "name": "uses list form for arrays containing empty objects",
+      "input": {
+        "items": [
+          {},
+          {}
+        ]
+      },
+      "expected": "items[2]:\n  -\n  -",
+      "specSection": "9.4",
+      "note": "Empty objects are excluded from tabular detection (§9.3), so the array uses list form with bare hyphen markers (§10)"
+    },
+    {
+      "category": "arrays-objects",
+      "name": "encodes a keyed-eligible object in a tabular column as a nested field group",
+      "input": {
+        "a": [
+          {
+            "t": {
+              "p": {
+                "x": 1
+              },
+              "q": {
+                "x": 2
+              }
+            },
+            "other": 9
+          }
+        ]
+      },
+      "expected": "a[1]{t{p{x},q{x}},other}:\n  1,2,9",
+      "specSection": "9.5",
+      "note": "Keyed tabular form is mandated in object-field and root positions, not in a column",
+      "minSpecVersion": "4.1"
+    },
+    {
+      "category": "arrays-objects",
+      "name": "places an empty object first field on the hyphen line",
+      "input": {
+        "items": [
+          {
+            "a": {},
+            "b": 1
+          }
+        ]
+      },
+      "expected": "items[1]:\n  - a:\n    b: 1",
+      "specSection": "10"
+    },
+    {
+      "category": "arrays-objects",
+      "name": "uses tabular form for a later field of a list-item object",
+      "input": {
+        "items": [
+          {
+            "id": 1,
+            "users": [
+              {
+                "id": 1,
+                "name": "Ada"
+              },
+              {
+                "id": 2,
+                "name": "Bob"
+              }
+            ]
+          }
+        ]
+      },
+      "expected": "items[1]:\n  - id: 1\n    users[2]{id,name}:\n      1,Ada\n      2,Bob",
+      "specSection": "10"
+    },
+    {
+      "category": "arrays-primitive",
+      "name": "encodes mixed primitive arrays inline",
+      "input": {
+        "data": [
+          "x",
+          "y",
+          true,
+          10
+        ]
+      },
+      "expected": "data[4]: x,y,true,10",
+      "specSection": "9.1"
+    },
+    {
+      "category": "arrays-primitive",
+      "name": "encodes empty arrays",
+      "input": {
+        "items": []
+      },
+      "expected": "items: []",
+      "specSection": "9.1"
+    },
+    {
+      "category": "arrays-primitive",
+      "name": "encodes empty string keys for inline arrays",
+      "input": {
+        "": [
+          1,
+          2,
+          3
+        ]
+      },
+      "expected": "\"\"[3]: 1,2,3",
+      "specSection": "9.1"
+    },
+    {
+      "category": "arrays-primitive",
+      "name": "encodes empty string keys for empty arrays",
+      "input": {
+        "": []
+      },
+      "expected": "\"\": []",
+      "specSection": "9.1"
+    },
+    {
+      "category": "arrays-primitive",
+      "name": "encodes empty string in single-item array",
+      "input": {
+        "items": [
+          ""
+        ]
+      },
+      "expected": "items[1]: \"\"",
+      "specSection": "9.1"
+    },
+    {
+      "category": "arrays-primitive",
+      "name": "encodes empty string in multi-item array",
+      "input": {
+        "items": [
+          "a",
+          "",
+          "b"
+        ]
+      },
+      "expected": "items[3]: a,\"\",b",
+      "specSection": "9.1"
+    },
+    {
+      "category": "arrays-primitive",
+      "name": "encodes whitespace-only strings in arrays",
+      "input": {
+        "items": [
+          " ",
+          "  "
+        ]
+      },
+      "expected": "items[2]: \" \",\"  \"",
+      "specSection": "9.1"
+    },
+    {
+      "category": "arrays-primitive",
+      "name": "quotes array strings with comma",
+      "input": {
+        "items": [
+          "a",
+          "b,c",
+          "d:e"
+        ]
+      },
+      "expected": "items[3]: a,\"b,c\",\"d:e\"",
+      "specSection": "9.1"
+    },
+    {
+      "category": "arrays-primitive",
+      "name": "quotes strings that look like literals or numbers in arrays",
+      "input": {
+        "items": [
+          "x",
+          "true",
+          "42",
+          "-3.14"
+        ]
+      },
+      "expected": "items[4]: x,\"true\",\"42\",\"-3.14\"",
+      "specSection": "9.1"
+    },
+    {
+      "category": "arrays-primitive",
+      "name": "quotes strings with structural meanings in arrays",
+      "input": {
+        "items": [
+          "[5",
+          "x]",
+          "- item",
+          "{key",
+          "y}"
+        ]
+      },
+      "expected": "items[5]: \"[5\",\"x]\",\"- item\",\"{key\",\"y}\"",
+      "specSection": "9.1"
+    },
+    {
+      "category": "arrays-primitive",
+      "name": "quotes hash-leading string in inline array",
+      "input": {
+        "tags": [
+          "#a",
+          "b"
+        ]
+      },
+      "expected": "tags[2]: \"#a\",b",
+      "specSection": "7.2"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "encodes arrays of uniform objects in tabular form",
+      "input": {
+        "items": [
+          {
+            "sku": "A1",
+            "qty": 2,
+            "price": 9.99
+          },
+          {
+            "sku": "B2",
+            "qty": 1,
+            "price": 14.5
+          }
+        ]
+      },
+      "expected": "items[2]{sku,qty,price}:\n  A1,2,9.99\n  B2,1,14.5",
+      "specSection": "9.3"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "encodes null values in tabular form",
+      "input": {
+        "items": [
+          {
+            "id": 1,
+            "value": null
+          },
+          {
+            "id": 2,
+            "value": "test"
+          }
+        ]
+      },
+      "expected": "items[2]{id,value}:\n  1,null\n  2,test",
+      "specSection": "9.3"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "quotes strings containing delimiters in tabular rows",
+      "input": {
+        "items": [
+          {
+            "sku": "A,1",
+            "desc": "cool",
+            "qty": 2
+          },
+          {
+            "sku": "B2",
+            "desc": "wip: test",
+            "qty": 1
+          }
+        ]
+      },
+      "expected": "items[2]{sku,desc,qty}:\n  \"A,1\",cool,2\n  B2,\"wip: test\",1",
+      "specSection": "9.3"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "quotes ambiguous strings in tabular rows",
+      "input": {
+        "items": [
+          {
+            "id": 1,
+            "status": "true"
+          },
+          {
+            "id": 2,
+            "status": "false"
+          }
+        ]
+      },
+      "expected": "items[2]{id,status}:\n  1,\"true\"\n  2,\"false\"",
+      "specSection": "9.3"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "encodes tabular arrays with keys needing quotes",
+      "input": {
+        "items": [
+          {
+            "order:id": 1,
+            "full name": "Ada"
+          },
+          {
+            "order:id": 2,
+            "full name": "Bob"
+          }
+        ]
+      },
+      "expected": "items[2]{\"order:id\",\"full name\"}:\n  1,Ada\n  2,Bob",
+      "specSection": "9.3"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "encodes tabular arrays with empty string keys",
+      "input": {
+        "": [
+          {
+            "id": 1,
+            "name": "Ada"
+          },
+          {
+            "id": 2,
+            "name": "Bob"
+          }
+        ]
+      },
+      "expected": "\"\"[2]{id,name}:\n  1,Ada\n  2,Bob",
+      "specSection": "9.3"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "quotes hash-leading string in tabular cell",
+      "input": {
+        "items": [
+          {
+            "tag": "#a"
+          },
+          {
+            "tag": "b"
+          }
+        ]
+      },
+      "expected": "items[2]{tag}:\n  \"#a\"\n  b",
+      "specSection": "7.2",
+      "note": "Unquoted, the first row would read as a comment line on decode"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "collapses a uniform nested object column into a nested field group",
+      "input": {
+        "orders": [
+          {
+            "id": 1,
+            "customer": {
+              "name": "Ada",
+              "country": "DK"
+            },
+            "total": 99
+          },
+          {
+            "id": 2,
+            "customer": {
+              "country": "UK",
+              "name": "Bob"
+            },
+            "total": 149
+          }
+        ]
+      },
+      "expected": "orders[2]{id,customer{name,country},total}:\n  1,Ada,DK,99\n  2,Bob,UK,149",
+      "specSection": "9.3"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "collapses sibling nested field groups with depth-first row layout",
+      "input": {
+        "shipments": [
+          {
+            "id": "s1",
+            "sender": {
+              "name": "ACME",
+              "city": "Berlin"
+            },
+            "receiver": {
+              "name": "Globex",
+              "city": "Oslo"
+            }
+          }
+        ]
+      },
+      "expected": "shipments[1]{id,sender{name,city},receiver{name,city}}:\n  s1,ACME,Berlin,Globex,Oslo",
+      "specSection": "9.3"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "collapses nested field groups recursively without a depth cap",
+      "input": {
+        "items": [
+          {
+            "id": 1,
+            "geo": {
+              "point": {
+                "lat": 1.5,
+                "lon": 2.5
+              }
+            }
+          },
+          {
+            "id": 2,
+            "geo": {
+              "point": {
+                "lat": 3,
+                "lon": 4
+              }
+            }
+          }
+        ]
+      },
+      "expected": "items[2]{id,geo{point{lat,lon}}}:\n  1,1.5,2.5\n  2,3,4",
+      "specSection": "9.3"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "uses the active delimiter inside nested field groups",
+      "input": {
+        "orders": [
+          {
+            "id": 1,
+            "customer": {
+              "name": "Ada",
+              "country": "DK"
+            },
+            "total": 99
+          },
+          {
+            "id": 2,
+            "customer": {
+              "name": "Bob",
+              "country": "UK"
+            },
+            "total": 149
+          }
+        ]
+      },
+      "options": {
+        "delimiter": "|"
+      },
+      "expected": "orders[2|]{id|customer{name|country}|total}:\n  1|Ada|DK|99\n  2|Bob|UK|149",
+      "specSection": "9.3"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "quotes subfield names inside nested field groups per key encoding",
+      "input": {
+        "items": [
+          {
+            "id": 1,
+            "customer": {
+              "full name": "Ada",
+              "country": "UK"
+            }
+          }
+        ]
+      },
+      "expected": "items[1]{id,customer{\"full name\",country}}:\n  1,Ada,UK",
+      "specSection": "9.3"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "falls back to list form when nested object keys differ per row",
+      "input": {
+        "entries": [
+          {
+            "id": 1,
+            "meta": {
+              "a": 1
+            }
+          },
+          {
+            "id": 2,
+            "meta": {
+              "b": 2
+            }
+          }
+        ]
+      },
+      "expected": "entries[2]:\n  - id: 1\n    meta:\n      a: 1\n  - id: 2\n    meta:\n      b: 2",
+      "specSection": "9.3",
+      "note": "The meta column is not nested-uniform (differing key sets), so the whole array uses §9.4"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "falls back to list form when a column mixes null and objects",
+      "input": {
+        "orders": [
+          {
+            "id": 1,
+            "customer": {
+              "name": "Ada"
+            }
+          },
+          {
+            "id": 2,
+            "customer": null
+          }
+        ]
+      },
+      "expected": "orders[2]:\n  - id: 1\n    customer:\n      name: Ada\n  - id: 2\n    customer: null",
+      "specSection": "9.3",
+      "note": "A null cell is a primitive, so the customer column is neither uniform-primitive nor nested-uniform"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "falls back to list form when a nested object contains an array",
+      "input": {
+        "orders": [
+          {
+            "id": 1,
+            "customer": {
+              "name": "Ada",
+              "tags": [
+                "x"
+              ]
+            }
+          }
+        ]
+      },
+      "expected": "orders[1]:\n  - id: 1\n    customer:\n      name: Ada\n      tags[1]: x",
+      "specSection": "9.3",
+      "note": "Array values disqualify a column; rows must contain only primitive cells"
+    },
+    {
+      "category": "arrays-tabular",
+      "name": "falls back to list form when a nested column contains an empty object",
+      "input": {
+        "items": [
+          {
+            "id": 1,
+            "meta": {}
+          }
+        ]
+      },
+      "expected": "items[1]:\n  - id: 1\n    meta:",
+      "specSection": "9.3",
+      "note": "Nested-uniform requires non-empty objects, mirroring the empty-object exclusion for elements"
+    },
+    {
+      "category": "delimiters",
+      "name": "encodes primitive arrays with tab delimiter",
+      "input": {
+        "tags": [
+          "reading",
+          "gaming",
+          "coding"
+        ]
+      },
+      "expected": "tags[3\t]: reading\tgaming\tcoding",
+      "options": {
+        "delimiter": "\t"
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "encodes primitive arrays with pipe delimiter",
+      "input": {
+        "tags": [
+          "reading",
+          "gaming",
+          "coding"
+        ]
+      },
+      "expected": "tags[3|]: reading|gaming|coding",
+      "options": {
+        "delimiter": "|"
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "encodes primitive arrays with comma delimiter",
+      "input": {
+        "tags": [
+          "reading",
+          "gaming",
+          "coding"
+        ]
+      },
+      "expected": "tags[3]: reading,gaming,coding",
+      "options": {
+        "delimiter": ","
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "encodes tabular arrays with tab delimiter",
+      "input": {
+        "items": [
+          {
+            "sku": "A1",
+            "qty": 2,
+            "price": 9.99
+          },
+          {
+            "sku": "B2",
+            "qty": 1,
+            "price": 14.5
+          }
+        ]
+      },
+      "expected": "items[2\t]{sku\tqty\tprice}:\n  A1\t2\t9.99\n  B2\t1\t14.5",
+      "options": {
+        "delimiter": "\t"
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "encodes tabular arrays with pipe delimiter",
+      "input": {
+        "items": [
+          {
+            "sku": "A1",
+            "qty": 2,
+            "price": 9.99
+          },
+          {
+            "sku": "B2",
+            "qty": 1,
+            "price": 14.5
+          }
+        ]
+      },
+      "expected": "items[2|]{sku|qty|price}:\n  A1|2|9.99\n  B2|1|14.5",
+      "options": {
+        "delimiter": "|"
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "encodes nested arrays with tab delimiter",
+      "input": {
+        "pairs": [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "c",
+            "d"
+          ]
+        ]
+      },
+      "expected": "pairs[2\t]:\n  - [2\t]: a\tb\n  - [2\t]: c\td",
+      "options": {
+        "delimiter": "\t"
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "encodes nested arrays with pipe delimiter",
+      "input": {
+        "pairs": [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "c",
+            "d"
+          ]
+        ],
+        "items": [
+          {
+            "k": [
+              [
+                1,
+                {
+                  "x": 1
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "expected": "pairs[2|]:\n  - [2|]: a|b\n  - [2|]: c|d\nitems[1|]:\n  - k[1|]:\n      - [2|]:\n        - 1\n        - x: 1",
+      "options": {
+        "delimiter": "|"
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "encodes root-level array with tab delimiter",
+      "input": [
+        "x",
+        "y",
+        "z"
+      ],
+      "expected": "[3\t]: x\ty\tz",
+      "options": {
+        "delimiter": "\t"
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "encodes root-level array with pipe delimiter",
+      "input": [
+        "x",
+        "y",
+        "z"
+      ],
+      "expected": "[3|]: x|y|z",
+      "options": {
+        "delimiter": "|"
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "encodes root-level array of objects with tab delimiter",
+      "input": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        }
+      ],
+      "expected": "[2\t]{id}:\n  1\n  2",
+      "options": {
+        "delimiter": "\t"
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "encodes root-level array of objects with pipe delimiter",
+      "input": [
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        }
+      ],
+      "expected": "[2|]{id}:\n  1\n  2",
+      "options": {
+        "delimiter": "|"
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "quotes strings containing pipe delimiter",
+      "input": {
+        "items": [
+          "a",
+          "b|c",
+          "d"
+        ]
+      },
+      "expected": "items[3|]: a|\"b|c\"|d",
+      "options": {
+        "delimiter": "|"
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "does not quote commas with tab delimiter",
+      "input": {
+        "items": [
+          "a,b",
+          "c,d"
+        ]
+      },
+      "expected": "items[2\t]: a,b\tc,d",
+      "options": {
+        "delimiter": "\t"
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "does not quote commas in tabular values with tab delimiter",
+      "input": {
+        "items": [
+          {
+            "id": 1,
+            "note": "a,b"
+          },
+          {
+            "id": 2,
+            "note": "c,d"
+          }
+        ]
+      },
+      "expected": "items[2\t]{id\tnote}:\n  1\ta,b\n  2\tc,d",
+      "options": {
+        "delimiter": "\t"
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "does not quote commas in object values with pipe delimiter",
+      "input": {
+        "note": "a,b"
+      },
+      "expected": "note: a,b",
+      "options": {
+        "delimiter": "|"
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "quotes nested array values containing pipe delimiter",
+      "input": {
+        "pairs": [
+          [
+            "a",
+            "b|c"
+          ]
+        ]
+      },
+      "expected": "pairs[1|]:\n  - [2|]: a|\"b|c\"",
+      "options": {
+        "delimiter": "|"
+      },
+      "specSection": "11"
+    },
+    {
+      "category": "delimiters",
+      "name": "quotes a primitive list item containing the document delimiter",
+      "input": {
+        "a": [
+          "x|y",
+          "p,q",
+          {
+            "b": 1
+          }
+        ]
+      },
+      "expected": "a[3|]:\n  - \"x|y\"\n  - p,q\n  - b: 1",
+      "options": {
+        "delimiter": "|"
+      },
+      "specSection": "11.1",
+      "minSpecVersion": "4.2"
+    },
+    {
+      "category": "delimiters",
+      "name": "keeps a root string containing only a non-document delimiter unquoted",
+      "input": "a,b",
+      "expected": "a,b",
+      "options": {
+        "delimiter": "|"
+      },
+      "specSection": "11.1",
+      "note": "A root primitive is quoted against the document delimiter (§11.1)",
+      "minSpecVersion": "4.2"
+    },
+    {
+      "category": "objects-keyed",
+      "name": "encodes objects of uniform objects in keyed tabular form",
+      "input": {
+        "servers": {
+          "alpha": {
+            "host": "a.example.com",
+            "port": 8080
+          },
+          "beta": {
+            "host": "b.example.com",
+            "port": 9090
+          }
+        }
+      },
+      "expected": "servers[2:]{host,port}:\n  alpha: a.example.com,8080\n  beta: b.example.com,9090",
+      "specSection": "9.5"
+    },
+    {
+      "category": "objects-keyed",
+      "name": "encodes an eligible root object with a keyless keyed header",
+      "input": {
+        "alice": {
+          "age": 30,
+          "city": "Berlin"
+        },
+        "bob": {
+          "age": 25,
+          "city": "Oslo"
+        }
+      },
+      "expected": "[2:]{age,city}:\n  alice: 30,Berlin\n  bob: 25,Oslo",
+      "specSection": "9.5",
+      "note": "The keyless keyed header is valid only at the root (§5)"
+    },
+    {
+      "category": "objects-keyed",
+      "name": "collapses uniform nested object columns inside keyed headers",
+      "input": {
+        "regions": {
+          "eu": {
+            "name": "Europe",
+            "geo": {
+              "lat": 50,
+              "lon": 10
+            }
+          },
+          "us": {
+            "name": "America",
+            "geo": {
+              "lat": 40,
+              "lon": -100
+            }
+          }
+        }
+      },
+      "expected": "regions[2:]{name,geo{lat,lon}}:\n  eu: Europe,50,10\n  us: America,40,-100",
+      "specSection": "9.5"
+    },
+    {
+      "category": "objects-keyed",
+      "name": "orders fields by the first entry value's encounter order",
+      "input": {
+        "m": {
+          "a": {
+            "x": 1,
+            "y": 2
+          },
+          "b": {
+            "y": 4,
+            "x": 3
+          }
+        }
+      },
+      "expected": "m[2:]{x,y}:\n  a: 1,2\n  b: 3,4",
+      "specSection": "9.5"
+    },
+    {
+      "category": "objects-keyed",
+      "name": "uses the active delimiter in keyed headers and entry-row cells",
+      "input": {
+        "servers": {
+          "alpha": {
+            "host": "a.example.com",
+            "port": 8080,
+            "note": "x|y"
+          },
+          "beta": {
+            "host": "b.example.com",
+            "port": 9090,
+            "note": "p,q"
+          }
+        }
+      },
+      "options": {
+        "delimiter": "|"
+      },
+      "expected": "servers[2:|]{host|port|note}:\n  alpha: a.example.com|8080|\"x|y\"\n  beta: b.example.com|9090|p,q",
+      "specSection": "9.5",
+      "minSpecVersion": "4.2",
+      "note": "The keyed marker precedes the delimiter symbol: [2:|]"
+    },
+    {
+      "category": "objects-keyed",
+      "name": "quotes entry keys per key encoding",
+      "input": {
+        "ids": {
+          "42": {
+            "v": 1
+          },
+          "my key": {
+            "v": 2
+          }
+        }
+      },
+      "expected": "ids[2:]{v}:\n  \"42\": 1\n  \"my key\": 2",
+      "specSection": "9.5"
+    },
+    {
+      "category": "objects-keyed",
+      "name": "quotes entry-row cells containing the active delimiter",
+      "input": {
+        "notes": {
+          "n1": {
+            "text": "a,b"
+          },
+          "n2": {
+            "text": "c"
+          }
+        }
+      },
+      "expected": "notes[2:]{text}:\n  n1: \"a,b\"\n  n2: c",
+      "specSection": "9.5"
+    },
+    {
+      "category": "objects-keyed",
+      "name": "keeps single-entry objects in nested form",
+      "input": {
+        "config": {
+          "only": {
+            "a": 1,
+            "b": 2
+          }
+        }
+      },
+      "expected": "config:\n  only:\n    a: 1\n    b: 2",
+      "specSection": "9.5",
+      "note": "Keyed tabular detection requires at least two entries"
+    },
+    {
+      "category": "objects-keyed",
+      "name": "keeps objects in nested form when entry values have differing key sets",
+      "input": {
+        "envs": {
+          "dev": {
+            "host": "x"
+          },
+          "prod": {
+            "host": "y",
+            "port": 1
+          }
+        }
+      },
+      "expected": "envs:\n  dev:\n    host: x\n  prod:\n    host: y\n    port: 1",
+      "specSection": "9.5"
+    },
+    {
+      "category": "objects-keyed",
+      "name": "keeps objects in nested form when a value is primitive",
+      "input": {
+        "m": {
+          "a": {
+            "x": 1
+          },
+          "b": 2
+        }
+      },
+      "expected": "m:\n  a:\n    x: 1\n  b: 2",
+      "specSection": "9.5"
+    },
+    {
+      "category": "objects-keyed",
+      "name": "keeps objects in nested form when an entry value contains an array",
+      "input": {
+        "m": {
+          "a": {
+            "tags": [
+              "x"
+            ]
+          },
+          "b": {
+            "tags": [
+              "y"
+            ]
+          }
+        }
+      },
+      "expected": "m:\n  a:\n    tags[1]: x\n  b:\n    tags[1]: y",
+      "specSection": "9.5",
+      "note": "Entry-row cells must be primitive leaves; an array value disqualifies the column"
+    },
+    {
+      "category": "objects-keyed",
+      "name": "emits a keyed header on the hyphen line when it is the first field of a list item",
+      "input": {
+        "items": [
+          {
+            "config": {
+              "a": {
+                "x": 1
+              },
+              "b": {
+                "x": 2
+              }
+            },
+            "status": "ok"
+          },
+          {
+            "status": "down"
+          }
+        ]
+      },
+      "expected": "items[2]:\n  - config[2:]{x}:\n      a: 1\n      b: 2\n    status: ok\n  - status: down",
+      "specSection": "10",
+      "note": "Entry rows at depth +2, sibling fields at depth +1, mirroring tabular arrays on hyphen lines"
+    },
+    {
+      "category": "objects-keyed",
+      "name": "never encodes an anonymous array element in keyed tabular form",
+      "input": {
+        "items": [
+          {
+            "a": {
+              "x": 1
+            },
+            "b": {
+              "x": 2
+            }
+          },
+          5
+        ]
+      },
+      "expected": "items[2]:\n  - a:\n      x: 1\n    b:\n      x: 2\n  - 5",
+      "specSection": "9.5",
+      "note": "The element object is keyed-eligible but has no key; the keyless form is root-only, so it encodes per §10"
+    },
+    {
+      "category": "objects-keyed",
+      "name": "keeps an object of empty objects out of keyed tabular form",
+      "input": {
+        "m": {
+          "a": {},
+          "b": {}
+        }
+      },
+      "expected": "m:\n  a:\n  b:",
+      "specSection": "9.5"
+    },
+    {
+      "category": "objects",
+      "name": "preserves key order in objects with primitive values",
+      "input": {
+        "id": 123,
+        "name": "Ada",
+        "active": true,
+        "value": null
+      },
+      "expected": "id: 123\nname: Ada\nactive: true\nvalue: null",
+      "specSection": "8"
+    },
+    {
+      "category": "objects",
+      "name": "encodes an empty root object as an empty document",
+      "input": {},
+      "expected": "",
+      "specSection": "8"
+    },
+    {
+      "category": "objects",
+      "name": "quotes string value with colon",
+      "input": {
+        "note": "a:b"
+      },
+      "expected": "note: \"a:b\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "objects",
+      "name": "quotes string value with comma",
+      "input": {
+        "note": "a,b"
+      },
+      "expected": "note: \"a,b\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "objects",
+      "name": "quotes string value with newline",
+      "input": {
+        "text": "line1\nline2"
+      },
+      "expected": "text: \"line1\\nline2\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "objects",
+      "name": "quotes string value with embedded quotes",
+      "input": {
+        "text": "say \"hello\""
+      },
+      "expected": "text: \"say \\\"hello\\\"\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "objects",
+      "name": "quotes string values with a leading or trailing space",
+      "input": {
+        "lead": " padded",
+        "trail": "padded "
+      },
+      "expected": "lead: \" padded\"\ntrail: \"padded \"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "objects",
+      "name": "quotes string value with only spaces",
+      "input": {
+        "text": "  "
+      },
+      "expected": "text: \"  \"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "objects",
+      "name": "quotes string value that looks like true",
+      "input": {
+        "v": "true"
+      },
+      "expected": "v: \"true\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "objects",
+      "name": "quotes string value that looks like number",
+      "input": {
+        "v": "42"
+      },
+      "expected": "v: \"42\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "objects",
+      "name": "quotes string value that looks like a number with an uppercase exponent",
+      "input": {
+        "v": "1E6"
+      },
+      "expected": "v: \"1E6\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "objects",
+      "name": "quotes key with colon",
+      "input": {
+        "order:id": 7
+      },
+      "expected": "\"order:id\": 7",
+      "specSection": "7.3"
+    },
+    {
+      "category": "objects",
+      "name": "quotes keys with brackets or braces",
+      "input": {
+        "[index]": 5,
+        "{key}": 6
+      },
+      "expected": "\"[index]\": 5\n\"{key}\": 6",
+      "specSection": "7.3"
+    },
+    {
+      "category": "objects",
+      "name": "quotes key with comma",
+      "input": {
+        "a,b": 1
+      },
+      "expected": "\"a,b\": 1",
+      "specSection": "7.3"
+    },
+    {
+      "category": "objects",
+      "name": "quotes keys with spaces",
+      "input": {
+        "full name": "Ada",
+        " a ": 1
+      },
+      "expected": "\"full name\": Ada\n\" a \": 1",
+      "specSection": "7.3"
+    },
+    {
+      "category": "objects",
+      "name": "quotes keys with a leading or interior hyphen",
+      "input": {
+        "-lead": 1,
+        "a-b": 2
+      },
+      "expected": "\"-lead\": 1\n\"a-b\": 2",
+      "specSection": "7.3"
+    },
+    {
+      "category": "objects",
+      "name": "quotes numeric key",
+      "input": {
+        "123": "x"
+      },
+      "expected": "\"123\": x",
+      "specSection": "7.3"
+    },
+    {
+      "category": "objects",
+      "name": "quotes empty string key",
+      "input": {
+        "": 1
+      },
+      "expected": "\"\": 1",
+      "specSection": "7.3"
+    },
+    {
+      "category": "objects",
+      "name": "quotes non-ASCII key",
+      "input": {
+        "café": 1
+      },
+      "expected": "\"café\": 1",
+      "specSection": "7.3",
+      "note": "The unquoted-key pattern is ASCII-only, so every non-ASCII key is quoted"
+    },
+    {
+      "category": "objects",
+      "name": "keeps dotted and literal-named keys unquoted",
+      "input": {
+        "a.b": 1,
+        "true": 2
+      },
+      "expected": "a.b: 1\ntrue: 2",
+      "specSection": "7.3",
+      "minSpecVersion": "4.2"
+    },
+    {
+      "category": "objects",
+      "name": "escapes newline and quotes in keys",
+      "input": {
+        "line\n": 1,
+        "he said \"hi\"": 2
+      },
+      "expected": "\"line\\n\": 1\n\"he said \\\"hi\\\"\": 2",
+      "specSection": "7.1"
+    },
+    {
+      "category": "objects",
+      "name": "escapes tab in key",
+      "input": {
+        "tab\there": 2
+      },
+      "expected": "\"tab\\there\": 2",
+      "specSection": "7.1"
+    },
+    {
+      "category": "objects",
+      "name": "escapes U+0004 control character in key via \\uXXXX",
+      "input": {
+        "a\u0004b": 1
+      },
+      "expected": "\"a\\u0004b\": 1",
+      "specSection": "7.1"
+    },
+    {
+      "category": "objects",
+      "name": "escapes U+001F control character in key via \\uXXXX",
+      "input": {
+        "x\u001fy": 2
+      },
+      "expected": "\"x\\u001fy\": 2",
+      "specSection": "7.1"
+    },
+    {
+      "category": "objects",
+      "name": "encodes deeply nested objects",
+      "input": {
+        "a": {
+          "b": {
+            "c": "deep"
+          }
+        }
+      },
+      "expected": "a:\n  b:\n    c: deep",
+      "specSection": "8"
+    },
+    {
+      "category": "objects",
+      "name": "encodes empty nested object",
+      "input": {
+        "user": {}
+      },
+      "expected": "user:",
+      "specSection": "8"
+    },
+    {
+      "category": "objects",
+      "name": "encodes __proto__ own property as an ordinary key",
+      "input": {
+        "__proto__": "polluted",
+        "safe": true
+      },
+      "expected": "__proto__: polluted\nsafe: true",
+      "specSection": "15",
+      "note": "No key has special meaning, so the encoder emits prototype-named own entries like any other (§8)"
+    },
+    {
+      "category": "objects",
+      "name": "encodes __proto__ as a tabular field name",
+      "input": {
+        "rows": [
+          {
+            "__proto__": "a",
+            "x": 1
+          },
+          {
+            "__proto__": "b",
+            "x": 2
+          }
+        ]
+      },
+      "expected": "rows[2]{__proto__,x}:\n  a,1\n  b,2",
+      "specSection": "15"
+    },
+    {
+      "category": "objects",
+      "name": "quotes hash-leading string in object field value",
+      "input": {
+        "note": "#x"
+      },
+      "expected": "note: \"#x\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "objects",
+      "name": "encodes empty string key opening a nested object",
+      "input": {
+        "": {
+          "a": 1
+        }
+      },
+      "expected": "\"\":\n  a: 1",
+      "specSection": "8"
+    },
+    {
+      "category": "objects",
+      "name": "keeps strings that only resemble numbers or literals, a leading byte-order mark, or DEL unquoted",
+      "input": {
+        "a": ".5",
+        "b": "NaN",
+        "c": "True",
+        "d": "﻿x",
+        "e": "ab",
+        "f": "٤٢"
+      },
+      "expected": "a: .5\nb: NaN\nc: True\nd: ﻿x\ne: ab\nf: ٤٢",
+      "specSection": "7.2",
+      "note": "Only a root primitive starting with U+FEFF is quoted, and only U+0000–U+001F count as controls (§7.1, §7.2)",
+      "minSpecVersion": "4.2"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes safe strings without quotes",
+      "input": "hello",
+      "expected": "hello",
+      "specSection": "7.2"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes safe string with underscore and numbers",
+      "input": "Ada_99",
+      "expected": "Ada_99",
+      "specSection": "7.2"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes empty string",
+      "input": "",
+      "expected": "\"\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes string that looks like true",
+      "input": "true",
+      "expected": "\"true\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes string that looks like false",
+      "input": "false",
+      "expected": "\"false\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes string that looks like null",
+      "input": "null",
+      "expected": "\"null\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes string that looks like integer",
+      "input": "42",
+      "expected": "\"42\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes string that looks like a decimal",
+      "input": "3.14",
+      "expected": "\"3.14\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes string that looks like scientific notation",
+      "input": "1e-6",
+      "expected": "\"1e-6\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes string with leading zero",
+      "input": "05",
+      "expected": "\"05\"",
+      "specSection": "7.2",
+      "note": "Matches the numeric-like pattern, so it MUST be quoted"
+    },
+    {
+      "category": "primitives",
+      "name": "escapes newline, tab, and carriage return in strings",
+      "input": [
+        "line1\nline2",
+        "tab\there",
+        "return\rcarriage"
+      ],
+      "expected": "[3]: \"line1\\nline2\",\"tab\\there\",\"return\\rcarriage\"",
+      "specSection": "7.1"
+    },
+    {
+      "category": "primitives",
+      "name": "escapes U+0004, U+0008, and U+000C via \\uXXXX and keeps DEL, U+0085, and U+2028 literal in quoted strings",
+      "input": {
+        "val": "a\u0004\b\fb",
+        "sep": "a: b"
+      },
+      "expected": "val: \"a\\u0004\\u0008\\u000cb\"\nsep: \"a: b\"",
+      "specSection": "7.1",
+      "minSpecVersion": "4.2"
+    },
+    {
+      "category": "primitives",
+      "name": "escapes backslash in string",
+      "input": "Users\\path",
+      "expected": "\"Users\\\\path\"",
+      "specSection": "7.1"
+    },
+    {
+      "category": "primitives",
+      "name": "keeps a string with an interior hyphen or hash unquoted",
+      "input": "a-b #c",
+      "expected": "a-b #c",
+      "specSection": "7.2",
+      "minSpecVersion": "4.2"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes string starting with hyphen-space",
+      "input": "- item",
+      "expected": "\"- item\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes single hyphen and hyphen-space string as object values",
+      "input": {
+        "marker": "-",
+        "note": "- item"
+      },
+      "expected": "marker: \"-\"\nnote: \"- item\"",
+      "specSection": "7.2",
+      "note": "Either would otherwise read as a list item marker"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes single hyphen and leading-hyphen string in array",
+      "input": {
+        "items": [
+          "-",
+          "-x"
+        ]
+      },
+      "expected": "items[2]: \"-\",\"-x\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes string with bracket notation",
+      "input": "a[test]",
+      "expected": "\"a[test]\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes string with brace notation",
+      "input": "{key}",
+      "expected": "\"{key}\"",
+      "specSection": "7.2"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes Unicode string without quotes",
+      "input": "café",
+      "expected": "café",
+      "specSection": "7.2"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes string with emoji and spaces",
+      "input": "hello 👋 world",
+      "expected": "hello 👋 world",
+      "specSection": "7.2"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes emoji inside a quoted string",
+      "input": "a,🚀",
+      "expected": "\"a,🚀\"",
+      "specSection": "7.1",
+      "note": "Quoting is triggered by the delimiter; the supplementary scalar stays literal UTF-8, never a surrogate escape"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes positive integer",
+      "input": 42,
+      "expected": "42",
+      "specSection": "2"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes decimal number",
+      "input": 3.14,
+      "expected": "3.14",
+      "specSection": "2"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes negative integer",
+      "input": -7,
+      "expected": "-7",
+      "specSection": "2"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes zero",
+      "input": 0,
+      "expected": "0",
+      "specSection": "2"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes negative zero as zero",
+      "input": -0.0,
+      "expected": "0",
+      "specSection": "2"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes large integer without exponent notation",
+      "input": 1000000.0,
+      "expected": "1000000",
+      "specSection": "2",
+      "note": "Within the canonical decimal range"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes small decimal without exponent notation",
+      "input": 1e-06,
+      "expected": "0.000001",
+      "specSection": "2",
+      "note": "Lower bound of the canonical decimal range"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes large number",
+      "input": 100000000000000000000,
+      "expected": "100000000000000000000",
+      "specSection": "2"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes MAX_SAFE_INTEGER",
+      "input": 9007199254740991,
+      "expected": "9007199254740991",
+      "specSection": "2"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes floats with their shortest round-trip digits",
+      "input": [
+        0.3333333333333333,
+        0.30000000000000004,
+        -1e-06
+      ],
+      "expected": "[3]: 0.3333333333333333,0.30000000000000004,-0.000001",
+      "specSection": "2",
+      "minSpecVersion": "4.2"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes true",
+      "input": true,
+      "expected": "true",
+      "specSection": "2"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes false",
+      "input": false,
+      "expected": "false",
+      "specSection": "2"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes null",
+      "input": null,
+      "expected": "null",
+      "specSection": "2"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes leading-plus numeric-like string",
+      "input": "+1",
+      "expected": "\"+1\"",
+      "specSection": "7.2",
+      "note": "Unquoted, a v3 host-parser decoder would read the number 1"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes string starting with hash",
+      "input": "#hello",
+      "expected": "\"#hello\"",
+      "specSection": "7.2",
+      "note": "Comment marker at position 0 must be quoted"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes a root string starting with U+FEFF",
+      "input": "﻿8",
+      "expected": "\"﻿8\"",
+      "specSection": "7.2",
+      "note": "Unquoted, a decoder would remove the U+FEFF as a byte-order mark (§12) and read the number 8",
+      "minSpecVersion": "4.1"
+    },
+    {
+      "category": "primitives",
+      "name": "encodes a large integer-valued number with its shortest round-trip digits",
+      "input": 123456789012345680000,
+      "expected": "123456789012345680000",
+      "specSection": "2",
+      "note": "The binary64 value is exactly 123456789012345683968",
+      "minSpecVersion": "4.2"
+    },
+    {
+      "category": "primitives",
+      "name": "quotes a delimiter, colon, hyphen, or number sign that a combining mark follows",
+      "input": {
+        "items": [
+          "a,́b",
+          "-́",
+          "#́"
+        ],
+        "k": "x:́"
+      },
+      "expected": "items[3]: \"a,́b\",\"-́\",\"#́\"\nk: \"x:́\"",
+      "specSection": "1.2",
+      "minSpecVersion": "4.4"
+    },
+    {
+      "category": "whitespace",
+      "name": "maintains proper indentation for nested structures",
+      "input": {
+        "user": {
+          "id": 123,
+          "name": "Ada"
+        },
+        "items": [
+          "a",
+          "b"
+        ]
+      },
+      "expected": "user:\n  id: 123\n  name: Ada\nitems[2]: a,b",
+      "specSection": "12"
+    },
+    {
+      "category": "whitespace",
+      "name": "respects custom indentSize option",
+      "input": {
+        "user": {
+          "name": "Ada",
+          "role": "admin"
+        }
+      },
+      "expected": "user:\n    name: Ada\n    role: admin",
+      "specSection": "12",
+      "options": {
+        "indentSize": 4
+      }
+    },
+    {
+      "category": "whitespace",
+      "name": "leaves non-ASCII whitespace unquoted",
+      "input": {
+        "k": " x "
+      },
+      "expected": "k:  x ",
+      "specSection": "7.2",
+      "note": "The whitespace trigger is U+0020 and U+0009 only",
+      "minSpecVersion": "4.2"
+    },
+    {
+      "category": "whitespace",
+      "name": "indents list-item sibling fields by indentSize",
+      "input": {
+        "a": [
+          {
+            "b": 1,
+            "c": 2
+          },
+          1
+        ]
+      },
+      "expected": "a[2]:\n    - b: 1\n        c: 2\n    - 1",
+      "options": {
+        "indentSize": 4
+      },
+      "specSection": "10"
+    }
+  ]
+}

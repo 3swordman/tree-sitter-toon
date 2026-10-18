@@ -29,7 +29,7 @@ jobs:
     - name: Install pnpm
       uses: pnpm/action-setup@v3
       with:
-        version: 8
+        version: 10
     
     - name: Install dependencies
       run: pnpm install
@@ -39,6 +39,14 @@ jobs:
     
     - name: Run tests
       run: pnpm run test
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Check exact specification fixtures and incremental edits
+      run: python test/check_v4.py
     
     - name: Upload test results
       if: failure()
@@ -90,7 +98,7 @@ jobs:
     - name: Install pnpm
       uses: pnpm/action-setup@v3
       with:
-        version: 8
+        version: 10
     
     - name: Install dependencies
       run: pnpm install

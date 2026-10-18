@@ -167,8 +167,8 @@ items[2]:
               (row_values
                 (single_value
                   (value
-                    (string))))))
-          (comment)
+                    (string))))
+              (comment)))
           (row
             (value_row
               (row_values
@@ -261,10 +261,7 @@ Comment lines - tab prefix is not a comment
 
 (source_file
   (ERROR
-    (UNEXPECTED '#')
-    (unquoted_key)
-    (UNEXPECTED '\n')))
-
+    (UNEXPECTED '#')))
 
 ==================
 Comment lines - space then tab prefix is not a comment
@@ -276,9 +273,7 @@ Comment lines - space then tab prefix is not a comment
 
 (source_file
   (ERROR
-    (UNEXPECTED '#')
-    (unquoted_key)
-    (UNEXPECTED '\n')))
+    (UNEXPECTED '#')))
 
 ==================
 Comment lines - uninterpreted syntax

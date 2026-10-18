@@ -10,13 +10,17 @@ data[3]: a,b,c
   (document
     (object
       (pair
-        key: (key (unquoted_key))
+        key: (key
+          (unquoted_key))
         (header
           length: (number))
         value: (inline_values
-          (value (unquoted_string))
-          (value (unquoted_string))
-          (value (unquoted_string)))))))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
 
 ==================
 Pipe delimiter - inline
@@ -30,20 +34,24 @@ data[3|]: x|y|z
   (document
     (object
       (pair
-        key: (key (unquoted_key))
+        key: (key
+          (unquoted_key))
         (header
           length: (number)
           delimiter: (delimiter))
         value: (inline_values
-          (value (unquoted_string))
-          (value (unquoted_string))
-          (value (unquoted_string)))))))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
 
 ==================
 Pipe delimiter - tabular
 ==================
 
-data[2|]:
+data[2|]{a|b|c}:
   a|b|c
   x|y|z
 
@@ -53,19 +61,33 @@ data[2|]:
   (document
     (object
       (pair
-        key: (key (unquoted_key))
+        key: (key
+          (unquoted_key))
         (header
           length: (number)
-          delimiter: (delimiter))
+          delimiter: (delimiter)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
         value: (array_body
           (tabular_row
-            (value (unquoted_string))
-            (value (unquoted_string))
-            (value (unquoted_string)))
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string)))
           (tabular_row
-            (value (unquoted_string))
-            (value (unquoted_string))
-            (value (unquoted_string))))))))
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string))))))))
 
 ==================
 Tab delimiter - inline
@@ -79,13 +101,16 @@ data[2	]: a	b
   (document
     (object
       (pair
-        key: (key (unquoted_key))
+        key: (key
+          (unquoted_key))
         (header
           length: (number)
           delimiter: (delimiter))
         value: (inline_values
-          (value (unquoted_string))
-          (value (unquoted_string)))))))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
 
 ==================
 Multiple delimiters in same document
@@ -101,28 +126,37 @@ tab[2	]: m	n
   (document
     (object
       (pair
-        key: (key (unquoted_key))
+        key: (key
+          (unquoted_key))
         (header
           length: (number))
         value: (inline_values
-          (value (unquoted_string))
-          (value (unquoted_string))))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))))
       (pair
-        key: (key (unquoted_key))
+        key: (key
+          (unquoted_key))
         (header
           length: (number)
           delimiter: (delimiter))
         value: (inline_values
-          (value (unquoted_string))
-          (value (unquoted_string))))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))))
       (pair
-        key: (key (unquoted_key))
+        key: (key
+          (unquoted_key))
         (header
           length: (number)
           delimiter: (delimiter))
         value: (inline_values
-          (value (unquoted_string))
-          (value (unquoted_string)))))))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
 
 ==================
 Pipe delimiter with field list
@@ -138,21 +172,27 @@ data[2|]{col1|col2}:
   (document
     (object
       (pair
-        key: (key (unquoted_key))
+        key: (key
+          (unquoted_key))
         (header
           length: (number)
           delimiter: (delimiter)
           fields: (field_list
-            (field_name (unquoted_key))
-            (field_name (unquoted_key))))
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
         value: (array_body
           (tabular_row
-            (value (unquoted_string))
-            (value (unquoted_string)))
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string)))
           (tabular_row
-            (value (unquoted_string))
-            (value (unquoted_string))))))))
-
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string))))))))
 
 ==================
 Comprehensive delimiter variations

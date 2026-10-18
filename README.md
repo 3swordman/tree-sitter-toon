@@ -1,6 +1,6 @@
 # Tree-Sitter TOON Grammar
 
-A tree-sitter grammar for TOON (Token-Oriented Object Notation) v4.0, with syntax highlighting queries for editors including Zed.
+A tree-sitter grammar targeting **TOON specification 4.4** (October 8, 2026), with syntax highlighting queries for editors including Zed (`toon-spec: 4.4`).
 
 ## Installation
 
@@ -11,10 +11,10 @@ pip install tree-sitter-toon
 ```
 
 ```python
-from tree_sitter import Parser
+from tree_sitter import Language, Parser
 from tree_sitter_toon import language
 
-parser = Parser(language())
+parser = Parser(Language(language()))
 tree = parser.parse(b"name: value")
 ```
 
@@ -39,26 +39,49 @@ tree-sitter parse example.toon
 - Recursive field groups in tabular and keyed headers
 - Bare empty arrays in fields, at the root, and in list items
 - Decoder-compatible literal keys and unquoted strings, Unicode, and `\uXXXX` escapes
+- Arbitrary literal header and field names, empty keys, and spaces before key-value colons
+- Quoted spans inside unquoted tokens, literal quoted controls, BOM and CRLF handling
 - Objects, list items, quoted strings, numbers, booleans, and null
+- Correct sibling scopes after empty objects and list-item first fields
 - Highlighting, bracket matching, and indentation queries
 
 This grammar produces syntax trees for editor tooling. It is not a TOON decoder
 or strict validator: declared lengths, row widths, duplicate keys, numeric range,
 and configurable strict indentation checks belong in a decoder or validator.
-Some non-strict input forms remain accepted for editing. Dotted keys are literal
-keys; v4 removes key folding and path expansion.
+Indentation widths are inferred from nested scopes, including custom widths.
+Blank lines and some non-strict indentation forms remain accepted for editing.
+Dotted keys are literal keys; v4 removes key folding and path expansion.
+
+Malformed headers such as `foo[03]: 1` are syntax errors under 4.4, including
+in non-strict mode. Quote the key (`"foo[03]": 1`) to use it literally. Tables
+require field lists, and keyless fields-bearing headers are allowed only at the
+document root. An empty unquoted key has no `key` child in its `pair` or
+`keyed_row`, just as empty cells have no `value` child.
 
 ## Verification
 
 ```bash
 tree-sitter test
 python3 test/check_v4.py
+# Corpus, native Node binding, and editor query checks
+npm test
 ```
 
-The corpus includes valid decode fixtures from the pinned TOON spec `v4.0.0`
-tag. The additional checks preserve exact input bytes (including missing final
-newlines), verify delimiter and token classification, and exercise incremental
-edits. Fixture sources and their MIT license are in `test/fixtures/`.
+The corpus includes all **246 valid decode cases and 160 encoder outputs** from
+the pinned TOON spec `v4.4.0` tag (revision
+`d09c3d33e37389345a74bd96981eb96dd9be6c5e`). Exact-input checks preserve missing
+final newlines and control characters, reconstruct fixture data from the syntax
+trees to check scopes, and verify malformed syntax, token classification, custom
+indentation, and incremental edits. Fixture sources and their MIT license are in
+`test/fixtures/`. The Node binding requires the Tree-sitter 0.25.x runtime.
+
+To refresh the pinned fixtures and corpus snapshots from a spec checkout:
+
+```bash
+python3 test/update_spec_fixtures.py /path/to/toon-format/spec
+```
+
+Review the generated snapshots and run the checks above after importing.
 
 ## Documentation
 
@@ -71,7 +94,7 @@ test/corpus/
 ├── arrays/          - Array tests (inline, tabular, list, root)
 ├── objects/         - Object structure tests
 ├── delimiters/      - Delimiter-specific tests
-├── spec/            - Pinned TOON v4.0 decode fixtures
+├── spec/            - Pinned TOON v4.4 decode fixtures and encoder outputs
 ├── comments.txt     - Comment and CRLF regressions
 ├── primitives.txt   - All primitive value types
 └── mixed.txt        - Complex combined scenarios
@@ -113,5 +136,5 @@ Licensed under the [MIT License](LICENSE).
 
 ## Links
 
-- [TOON Specification v4.0](https://github.com/toon-format/spec/blob/v4.0.0/SPEC.md)
+- [TOON Specification v4.4](https://github.com/toon-format/spec/blob/v4.4.0/SPEC.md)
 - [Tree-sitter Documentation](https://tree-sitter.github.io/)

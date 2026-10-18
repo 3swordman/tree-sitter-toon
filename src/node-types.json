@@ -278,7 +278,7 @@
     "fields": {
       "key": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "key",
@@ -364,7 +364,7 @@
     "fields": {
       "key": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "key",
@@ -562,6 +562,10 @@
         }
       ]
     }
+  },
+  {
+    "type": "\u0000",
+    "named": false
   },
   {
     "type": "\t",

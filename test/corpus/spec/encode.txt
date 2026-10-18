@@ -1,0 +1,4373 @@
+==================
+spec v4.4 encode: arrays-nested - quotes strings containing delimiters in nested arrays
+==================
+pairs[2]:
+  - [2]: a,b
+  - [3]: "c,d","e:f","true"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number))
+                value: (inline_values
+                  (value
+                    (unquoted_string))
+                  (value
+                    (unquoted_string))))))
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number))
+                value: (inline_values
+                  (value
+                    (string))
+                  (value
+                    (string))
+                  (value
+                    (string)))))))))))
+
+==================
+spec v4.4 encode: arrays-nested - encodes empty inner arrays
+==================
+pairs[2]:
+  - [0]:
+  - [0]:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number)))))
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number))))))))))
+
+==================
+spec v4.4 encode: arrays-nested - encodes root-level primitive array
+==================
+[5]: x,y,"true",true,10
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number))
+      value: (inline_values
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))
+        (value
+          (string))
+        (value
+          (boolean))
+        (value
+          (number))))))
+
+==================
+spec v4.4 encode: arrays-nested - encodes root-level array of uniform objects in tabular form
+==================
+[2]{id}:
+  1
+  2
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)
+        fields: (field_list
+          (field_name
+            (unquoted_key))))
+      value: (array_body
+        (tabular_row
+          (value
+            (number)))
+        (tabular_row
+          (value
+            (number)))))))
+
+==================
+spec v4.4 encode: arrays-nested - encodes root-level array of non-uniform objects in list form
+==================
+[2]:
+  - id: 1
+  - id: 2
+    name: Ada
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number))
+      value: (array_body
+        (row
+          (object_row
+            (object
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (number))))))
+        (row
+          (object_row
+            (object
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (number)))
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (unquoted_string))))))))))
+
+==================
+spec v4.4 encode: arrays-nested - encodes root-level array mixing primitive, object, and array of objects in list form
+==================
+[3]:
+  - summary
+  - id: 1
+    name: Ada
+  - [2]:
+    - id: 2
+    - status: draft
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number))
+      value: (array_body
+        (row
+          (value_row
+            (row_values
+              (single_value
+                (value
+                  (unquoted_string))))))
+        (row
+          (object_row
+            (object
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (number)))
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (unquoted_string))))))
+        (row
+          (value_row
+            (list_array
+              (header
+                length: (number))
+              value: (array_body
+                (row
+                  (object_row
+                    (object
+                      (pair
+                        key: (key
+                          (unquoted_key))
+                        value: (value
+                          (number))))))
+                (row
+                  (object_row
+                    (object
+                      (pair
+                        key: (key
+                          (unquoted_key))
+                        value: (value
+                          (unquoted_string))))))))))))))
+
+==================
+spec v4.4 encode: arrays-nested - encodes root-level arrays of arrays
+==================
+[2]:
+  - [2]: 1,2
+  - [0]:
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number))
+      value: (array_body
+        (row
+          (value_row
+            (list_array
+              (header
+                length: (number))
+              value: (inline_values
+                (value
+                  (number))
+                (value
+                  (number))))))
+        (row
+          (value_row
+            (list_array
+              (header
+                length: (number)))))))))
+
+==================
+spec v4.4 encode: arrays-nested - encodes empty root-level array
+==================
+[]
+
+---
+
+(source_file
+  (document
+    (value
+      (empty_array))))
+
+==================
+spec v4.4 encode: arrays-nested - uses list form for arrays mixing primitives and objects
+==================
+items[3]:
+  - 1
+  - a: 1
+  - text
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value
+                    (number))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number))))))
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value
+                    (unquoted_string)))))))))))
+
+==================
+spec v4.4 encode: arrays-nested - uses list form for arrays mixing objects and arrays
+==================
+items[2]:
+  - a: 1
+  - [2]: 1,2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number))))))
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number))
+                value: (inline_values
+                  (value
+                    (number))
+                  (value
+                    (number)))))))))))
+
+==================
+spec v4.4 encode: arrays-nested - quotes hash-leading string as list item
+==================
+items[2]:
+  - "#x"
+  - a: 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value
+                    (string))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))))))))))
+
+==================
+spec v4.4 encode: arrays-nested - uses list form for a tabular-eligible array in list-item position
+==================
+a[1]:
+  - [2]:
+    - x: 1
+    - x: 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number))
+                value: (array_body
+                  (row
+                    (object_row
+                      (object
+                        (pair
+                          key: (key
+                            (unquoted_key))
+                          value: (value
+                            (number))))))
+                  (row
+                    (object_row
+                      (object
+                        (pair
+                          key: (key
+                            (unquoted_key))
+                          value: (value
+                            (number)))))))))))))))
+
+==================
+spec v4.4 encode: arrays-nested - uses list form for an array of arrays in list-item position
+==================
+[1]:
+  - [1]:
+    - [1]: 1
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number))
+      value: (array_body
+        (row
+          (value_row
+            (list_array
+              (header
+                length: (number))
+              value: (array_body
+                (row
+                  (value_row
+                    (list_array
+                      (header
+                        length: (number))
+                      value: (inline_values
+                        (value
+                          (number))))))))))))))
+
+==================
+spec v4.4 encode: arrays-nested - uses list form for an array mixing primitives and objects in list-item position
+==================
+a[2]:
+  - [2]:
+    - 1
+    - x: 1
+  - 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number))
+                value: (array_body
+                  (row
+                    (value_row
+                      (row_values
+                        (single_value
+                          (value
+                            (number))))))
+                  (row
+                    (object_row
+                      (object
+                        (pair
+                          key: (key
+                            (unquoted_key))
+                          value: (value
+                            (number))))))))))
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value
+                    (number)))))))))))
+
+==================
+spec v4.4 encode: arrays-objects - uses list form for objects with different fields
+==================
+items[2]:
+  - id: 1
+    name: First
+  - id: 2
+    name: Second
+    extra: true
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (boolean)))))))))))
+
+==================
+spec v4.4 encode: arrays-objects - preserves field order in list items
+==================
+items[2]:
+  - nums[3]: 1,2,3
+    name: Ada
+  - name: Ada
+    nums[3]: 1,2,3
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  (header
+                    length: (number))
+                  value: (inline_values
+                    (value
+                      (number))
+                    (value
+                      (number))
+                    (value
+                      (number))))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  (header
+                    length: (number))
+                  value: (inline_values
+                    (value
+                      (number))
+                    (value
+                      (number))
+                    (value
+                      (number))))))))))))
+
+==================
+spec v4.4 encode: arrays-objects - uses list form for objects containing arrays of arrays
+==================
+items[1]:
+  - matrix[2]:
+      - [2]: 1,2
+      - [2]: 3,4
+    name: grid
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  (header
+                    length: (number))
+                  value: (array_body
+                    (row
+                      (value_row
+                        (list_array
+                          (header
+                            length: (number))
+                          value: (inline_values
+                            (value
+                              (number))
+                            (value
+                              (number))))))
+                    (row
+                      (value_row
+                        (list_array
+                          (header
+                            length: (number))
+                          value: (inline_values
+                            (value
+                              (number))
+                            (value
+                              (number))))))))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string)))))))))))
+
+==================
+spec v4.4 encode: arrays-objects - uses tabular form for a list-item object's first field, with and without sibling fields
+==================
+items[2]:
+  - users[2]{id,name}:
+      1,Ada
+      2,Bob
+    status: active
+  - users[2]{id,name}:
+      3,Cy
+      4,Dee
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  (header
+                    length: (number)
+                    fields: (field_list
+                      (field_name
+                        (unquoted_key))
+                      (field_name
+                        (unquoted_key))))
+                  value: (array_body
+                    (tabular_row
+                      (value
+                        (number))
+                      (value
+                        (unquoted_string)))
+                    (tabular_row
+                      (value
+                        (number))
+                      (value
+                        (unquoted_string)))))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  (header
+                    length: (number)
+                    fields: (field_list
+                      (field_name
+                        (unquoted_key))
+                      (field_name
+                        (unquoted_key))))
+                  value: (array_body
+                    (tabular_row
+                      (value
+                        (number))
+                      (value
+                        (unquoted_string)))
+                    (tabular_row
+                      (value
+                        (number))
+                      (value
+                        (unquoted_string)))))))))))))
+
+==================
+spec v4.4 encode: arrays-objects - uses list form for nested object arrays with mismatched keys
+==================
+items[1]:
+  - users[2]:
+      - id: 1
+        name: Ada
+      - id: 2
+    status: active
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  (header
+                    length: (number))
+                  value: (array_body
+                    (row
+                      (object_row
+                        (object
+                          (pair
+                            key: (key
+                              (unquoted_key))
+                            value: (value
+                              (number)))
+                          (pair
+                            key: (key
+                              (unquoted_key))
+                            value: (value
+                              (unquoted_string))))))
+                    (row
+                      (object_row
+                        (object
+                          (pair
+                            key: (key
+                              (unquoted_key))
+                            value: (value
+                              (number))))))))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string)))))))))))
+
+==================
+spec v4.4 encode: arrays-objects - places empty arrays on the hyphen line when first and at field depth when later
+==================
+items[2]:
+  - data: []
+    name: Ada
+  - name: Bob
+    data: []
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (empty_array)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (empty_array)))))))))))
+
+==================
+spec v4.4 encode: arrays-objects - uses field order from first object for tabular headers
+==================
+items[2]{a,b,c}:
+  1,2,3
+  10,20,30
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (number))
+            (value
+              (number)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (number))
+            (value
+              (number))))))))
+
+==================
+spec v4.4 encode: arrays-objects - uses list form when one object has nested field
+==================
+items[2]:
+  - id: 1
+    data: string
+  - id: 2
+    data:
+      nested: true
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (object
+                    (pair
+                      key: (key
+                        (unquoted_key))
+                      value: (value
+                        (boolean)))))))))))))
+
+==================
+spec v4.4 encode: arrays-objects - uses list form for arrays containing empty objects
+==================
+items[2]:
+  -
+  -
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row))
+          (row
+            (object_row)))))))
+
+==================
+spec v4.4 encode: arrays-objects - encodes a keyed-eligible object in a tabular column as a nested field group
+==================
+a[1]{t{p{x},q{x}},other}:
+  1,2,9
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key)
+              fields: (field_list
+                (field_name
+                  (unquoted_key)
+                  fields: (field_list
+                    (field_name
+                      (unquoted_key))))
+                (field_name
+                  (unquoted_key)
+                  fields: (field_list
+                    (field_name
+                      (unquoted_key))))))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (number))
+            (value
+              (number))))))))
+
+==================
+spec v4.4 encode: arrays-objects - places an empty object first field on the hyphen line
+==================
+items[1]:
+  - a:
+    b: 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))))))))))
+
+==================
+spec v4.4 encode: arrays-objects - uses tabular form for a later field of a list-item object
+==================
+items[1]:
+  - id: 1
+    users[2]{id,name}:
+      1,Ada
+      2,Bob
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  (header
+                    length: (number)
+                    fields: (field_list
+                      (field_name
+                        (unquoted_key))
+                      (field_name
+                        (unquoted_key))))
+                  value: (array_body
+                    (tabular_row
+                      (value
+                        (number))
+                      (value
+                        (unquoted_string)))
+                    (tabular_row
+                      (value
+                        (number))
+                      (value
+                        (unquoted_string)))))))))))))
+
+==================
+spec v4.4 encode: arrays-primitive - encodes mixed primitive arrays inline
+==================
+data[4]: x,y,true,10
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (boolean))
+          (value
+            (number)))))))
+
+==================
+spec v4.4 encode: arrays-primitive - encodes empty arrays
+==================
+items: []
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (empty_array))))))
+
+==================
+spec v4.4 encode: arrays-primitive - encodes empty string keys for inline arrays
+==================
+""[3]: 1,2,3
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (number))
+          (value
+            (number))
+          (value
+            (number)))))))
+
+==================
+spec v4.4 encode: arrays-primitive - encodes empty string keys for empty arrays
+==================
+"": []
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (empty_array))))))
+
+==================
+spec v4.4 encode: arrays-primitive - encodes empty string in single-item array
+==================
+items[1]: ""
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (string)))))))
+
+==================
+spec v4.4 encode: arrays-primitive - encodes empty string in multi-item array
+==================
+items[3]: a,"",b
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec v4.4 encode: arrays-primitive - encodes whitespace-only strings in arrays
+==================
+items[2]: " ","  "
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (string))
+          (value
+            (string)))))))
+
+==================
+spec v4.4 encode: arrays-primitive - quotes array strings with comma
+==================
+items[3]: a,"b,c","d:e"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (string))
+          (value
+            (string)))))))
+
+==================
+spec v4.4 encode: arrays-primitive - quotes strings that look like literals or numbers in arrays
+==================
+items[4]: x,"true","42","-3.14"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (string))
+          (value
+            (string))
+          (value
+            (string)))))))
+
+==================
+spec v4.4 encode: arrays-primitive - quotes strings with structural meanings in arrays
+==================
+items[5]: "[5","x]","- item","{key","y}"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (string))
+          (value
+            (string))
+          (value
+            (string))
+          (value
+            (string))
+          (value
+            (string)))))))
+
+==================
+spec v4.4 encode: arrays-primitive - quotes hash-leading string in inline array
+==================
+tags[2]: "#a",b
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec v4.4 encode: arrays-tabular - encodes arrays of uniform objects in tabular form
+==================
+items[2]{sku,qty,price}:
+  A1,2,9.99
+  B2,1,14.5
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (number))
+            (value
+              (number)))
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (number))
+            (value
+              (number))))))))
+
+==================
+spec v4.4 encode: arrays-tabular - encodes null values in tabular form
+==================
+items[2]{id,value}:
+  1,null
+  2,test
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (null)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))))))))
+
+==================
+spec v4.4 encode: arrays-tabular - quotes strings containing delimiters in tabular rows
+==================
+items[2]{sku,desc,qty}:
+  "A,1",cool,2
+  B2,"wip: test",1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (string))
+            (value
+              (unquoted_string))
+            (value
+              (number)))
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (string))
+            (value
+              (number))))))))
+
+==================
+spec v4.4 encode: arrays-tabular - quotes ambiguous strings in tabular rows
+==================
+items[2]{id,status}:
+  1,"true"
+  2,"false"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (string)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (string))))))))
+
+==================
+spec v4.4 encode: arrays-tabular - encodes tabular arrays with keys needing quotes
+==================
+items[2]{"order:id","full name"}:
+  1,Ada
+  2,Bob
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (string))
+            (field_name
+              (string))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))))))))
+
+==================
+spec v4.4 encode: arrays-tabular - encodes tabular arrays with empty string keys
+==================
+""[2]{id,name}:
+  1,Ada
+  2,Bob
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))))))))
+
+==================
+spec v4.4 encode: arrays-tabular - quotes hash-leading string in tabular cell
+==================
+items[2]{tag}:
+  "#a"
+  b
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (string)))
+          (tabular_row
+            (value
+              (unquoted_string))))))))
+
+==================
+spec v4.4 encode: arrays-tabular - collapses a uniform nested object column into a nested field group
+==================
+orders[2]{id,customer{name,country},total}:
+  1,Ada,DK,99
+  2,Bob,UK,149
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key)
+              fields: (field_list
+                (field_name
+                  (unquoted_key))
+                (field_name
+                  (unquoted_key))))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string))
+            (value
+              (number)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string))
+            (value
+              (number))))))))
+
+==================
+spec v4.4 encode: arrays-tabular - collapses sibling nested field groups with depth-first row layout
+==================
+shipments[1]{id,sender{name,city},receiver{name,city}}:
+  s1,ACME,Berlin,Globex,Oslo
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key)
+              fields: (field_list
+                (field_name
+                  (unquoted_key))
+                (field_name
+                  (unquoted_key))))
+            (field_name
+              (unquoted_key)
+              fields: (field_list
+                (field_name
+                  (unquoted_key))
+                (field_name
+                  (unquoted_key))))))
+        value: (array_body
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string))))))))
+
+==================
+spec v4.4 encode: arrays-tabular - collapses nested field groups recursively without a depth cap
+==================
+items[2]{id,geo{point{lat,lon}}}:
+  1,1.5,2.5
+  2,3,4
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key)
+              fields: (field_list
+                (field_name
+                  (unquoted_key)
+                  fields: (field_list
+                    (field_name
+                      (unquoted_key))
+                    (field_name
+                      (unquoted_key))))))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (number))
+            (value
+              (number)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (number))
+            (value
+              (number))))))))
+
+==================
+spec v4.4 encode: arrays-tabular - uses the active delimiter inside nested field groups
+==================
+orders[2|]{id|customer{name|country}|total}:
+  1|Ada|DK|99
+  2|Bob|UK|149
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key)
+              fields: (field_list
+                (field_name
+                  (unquoted_key))
+                (field_name
+                  (unquoted_key))))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string))
+            (value
+              (number)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string))
+            (value
+              (number))))))))
+
+==================
+spec v4.4 encode: arrays-tabular - quotes subfield names inside nested field groups per key encoding
+==================
+items[1]{id,customer{"full name",country}}:
+  1,Ada,UK
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key)
+              fields: (field_list
+                (field_name
+                  (string))
+                (field_name
+                  (unquoted_key))))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))
+            (value
+              (unquoted_string))))))))
+
+==================
+spec v4.4 encode: arrays-tabular - falls back to list form when nested object keys differ per row
+==================
+entries[2]:
+  - id: 1
+    meta:
+      a: 1
+  - id: 2
+    meta:
+      b: 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (object
+                    (pair
+                      key: (key
+                        (unquoted_key))
+                      value: (value
+                        (number))))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (object
+                    (pair
+                      key: (key
+                        (unquoted_key))
+                      value: (value
+                        (number)))))))))))))
+
+==================
+spec v4.4 encode: arrays-tabular - falls back to list form when a column mixes null and objects
+==================
+orders[2]:
+  - id: 1
+    customer:
+      name: Ada
+  - id: 2
+    customer: null
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (object
+                    (pair
+                      key: (key
+                        (unquoted_key))
+                      value: (value
+                        (unquoted_string))))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (null)))))))))))
+
+==================
+spec v4.4 encode: arrays-tabular - falls back to list form when a nested object contains an array
+==================
+orders[1]:
+  - id: 1
+    customer:
+      name: Ada
+      tags[1]: x
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (object
+                    (pair
+                      key: (key
+                        (unquoted_key))
+                      value: (value
+                        (unquoted_string)))
+                    (pair
+                      key: (key
+                        (unquoted_key))
+                      (header
+                        length: (number))
+                      value: (inline_values
+                        (value
+                          (unquoted_string))))))))))))))
+
+==================
+spec v4.4 encode: arrays-tabular - falls back to list form when a nested column contains an empty object
+==================
+items[1]:
+  - id: 1
+    meta:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))
+                (pair
+                  key: (key
+                    (unquoted_key)))))))))))
+
+==================
+spec v4.4 encode: delimiters - encodes primitive arrays with tab delimiter
+==================
+tags[3	]: reading	gaming	coding
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec v4.4 encode: delimiters - encodes primitive arrays with pipe delimiter
+==================
+tags[3|]: reading|gaming|coding
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec v4.4 encode: delimiters - encodes primitive arrays with comma delimiter
+==================
+tags[3]: reading,gaming,coding
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec v4.4 encode: delimiters - encodes tabular arrays with tab delimiter
+==================
+items[2	]{sku	qty	price}:
+  A1	2	9.99
+  B2	1	14.5
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (number))
+            (value
+              (number)))
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (number))
+            (value
+              (number))))))))
+
+==================
+spec v4.4 encode: delimiters - encodes tabular arrays with pipe delimiter
+==================
+items[2|]{sku|qty|price}:
+  A1|2|9.99
+  B2|1|14.5
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (number))
+            (value
+              (number)))
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (number))
+            (value
+              (number))))))))
+
+==================
+spec v4.4 encode: delimiters - encodes nested arrays with tab delimiter
+==================
+pairs[2	]:
+  - [2	]: a	b
+  - [2	]: c	d
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (array_body
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number)
+                  delimiter: (delimiter))
+                value: (inline_values
+                  (value
+                    (unquoted_string))
+                  (value
+                    (unquoted_string))))))
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number)
+                  delimiter: (delimiter))
+                value: (inline_values
+                  (value
+                    (unquoted_string))
+                  (value
+                    (unquoted_string)))))))))))
+
+==================
+spec v4.4 encode: delimiters - encodes nested arrays with pipe delimiter
+==================
+pairs[2|]:
+  - [2|]: a|b
+  - [2|]: c|d
+items[1|]:
+  - k[1|]:
+      - [2|]:
+        - 1
+        - x: 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (array_body
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number)
+                  delimiter: (delimiter))
+                value: (inline_values
+                  (value
+                    (unquoted_string))
+                  (value
+                    (unquoted_string))))))
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number)
+                  delimiter: (delimiter))
+                value: (inline_values
+                  (value
+                    (unquoted_string))
+                  (value
+                    (unquoted_string))))))))
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  (header
+                    length: (number)
+                    delimiter: (delimiter))
+                  value: (array_body
+                    (row
+                      (value_row
+                        (list_array
+                          (header
+                            length: (number)
+                            delimiter: (delimiter))
+                          value: (array_body
+                            (row
+                              (value_row
+                                (row_values
+                                  (single_value
+                                    (value
+                                      (number))))))
+                            (row
+                              (object_row
+                                (object
+                                  (pair
+                                    key: (key
+                                      (unquoted_key))
+                                    value: (value
+                                      (number))))))))))))))))))))
+
+==================
+spec v4.4 encode: delimiters - encodes root-level array with tab delimiter
+==================
+[3	]: x	y	z
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)
+        delimiter: (delimiter))
+      value: (inline_values
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))))))
+
+==================
+spec v4.4 encode: delimiters - encodes root-level array with pipe delimiter
+==================
+[3|]: x|y|z
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)
+        delimiter: (delimiter))
+      value: (inline_values
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))
+        (value
+          (unquoted_string))))))
+
+==================
+spec v4.4 encode: delimiters - encodes root-level array of objects with tab delimiter
+==================
+[2	]{id}:
+  1
+  2
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)
+        delimiter: (delimiter)
+        fields: (field_list
+          (field_name
+            (unquoted_key))))
+      value: (array_body
+        (tabular_row
+          (value
+            (number)))
+        (tabular_row
+          (value
+            (number)))))))
+
+==================
+spec v4.4 encode: delimiters - encodes root-level array of objects with pipe delimiter
+==================
+[2|]{id}:
+  1
+  2
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number)
+        delimiter: (delimiter)
+        fields: (field_list
+          (field_name
+            (unquoted_key))))
+      value: (array_body
+        (tabular_row
+          (value
+            (number)))
+        (tabular_row
+          (value
+            (number)))))))
+
+==================
+spec v4.4 encode: delimiters - quotes strings containing pipe delimiter
+==================
+items[3|]: a|"b|c"|d
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec v4.4 encode: delimiters - does not quote commas with tab delimiter
+==================
+items[2	]: a,b	c,d
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec v4.4 encode: delimiters - does not quote commas in tabular values with tab delimiter
+==================
+items[2	]{id	note}:
+  1	a,b
+  2	c,d
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string)))
+          (tabular_row
+            (value
+              (number))
+            (value
+              (unquoted_string))))))))
+
+==================
+spec v4.4 encode: delimiters - does not quote commas in object values with pipe delimiter
+==================
+note: a,b
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string))))))
+
+==================
+spec v4.4 encode: delimiters - quotes nested array values containing pipe delimiter
+==================
+pairs[1|]:
+  - [2|]: a|"b|c"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (array_body
+          (row
+            (value_row
+              (list_array
+                (header
+                  length: (number)
+                  delimiter: (delimiter))
+                value: (inline_values
+                  (value
+                    (unquoted_string))
+                  (value
+                    (string)))))))))))
+
+==================
+spec v4.4 encode: delimiters - quotes a primitive list item containing the document delimiter
+==================
+a[3|]:
+  - "x|y"
+  - p,q
+  - b: 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          delimiter: (delimiter))
+        value: (array_body
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value
+                    (string))))))
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value
+                    (unquoted_string))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))))))))))
+
+==================
+spec v4.4 encode: delimiters - keeps a root string containing only a non-document delimiter unquoted
+==================
+a,b
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec v4.4 encode: objects-keyed - encodes objects of uniform objects in keyed tabular form
+==================
+servers[2:]{host,port}:
+  alpha: a.example.com,8080
+  beta: b.example.com,9090
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (keyed_header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (keyed_body
+          (keyed_row
+            key: (key
+              (unquoted_key))
+            values: (inline_values
+              (value
+                (unquoted_string))
+              (value
+                (number))))
+          (keyed_row
+            key: (key
+              (unquoted_key))
+            values: (inline_values
+              (value
+                (unquoted_string))
+              (value
+                (number)))))))))
+
+==================
+spec v4.4 encode: objects-keyed - encodes an eligible root object with a keyless keyed header
+==================
+[2:]{age,city}:
+  alice: 30,Berlin
+  bob: 25,Oslo
+
+---
+
+(source_file
+  (document
+    (keyed_object
+      (keyed_header
+        length: (number)
+        fields: (field_list
+          (field_name
+            (unquoted_key))
+          (field_name
+            (unquoted_key))))
+      value: (keyed_body
+        (keyed_row
+          key: (key
+            (unquoted_key))
+          values: (inline_values
+            (value
+              (number))
+            (value
+              (unquoted_string))))
+        (keyed_row
+          key: (key
+            (unquoted_key))
+          values: (inline_values
+            (value
+              (number))
+            (value
+              (unquoted_string))))))))
+
+==================
+spec v4.4 encode: objects-keyed - collapses uniform nested object columns inside keyed headers
+==================
+regions[2:]{name,geo{lat,lon}}:
+  eu: Europe,50,10
+  us: America,40,-100
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (keyed_header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key)
+              fields: (field_list
+                (field_name
+                  (unquoted_key))
+                (field_name
+                  (unquoted_key))))))
+        value: (keyed_body
+          (keyed_row
+            key: (key
+              (unquoted_key))
+            values: (inline_values
+              (value
+                (unquoted_string))
+              (value
+                (number))
+              (value
+                (number))))
+          (keyed_row
+            key: (key
+              (unquoted_key))
+            values: (inline_values
+              (value
+                (unquoted_string))
+              (value
+                (number))
+              (value
+                (number)))))))))
+
+==================
+spec v4.4 encode: objects-keyed - orders fields by the first entry value's encounter order
+==================
+m[2:]{x,y}:
+  a: 1,2
+  b: 3,4
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (keyed_header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (keyed_body
+          (keyed_row
+            key: (key
+              (unquoted_key))
+            values: (inline_values
+              (value
+                (number))
+              (value
+                (number))))
+          (keyed_row
+            key: (key
+              (unquoted_key))
+            values: (inline_values
+              (value
+                (number))
+              (value
+                (number)))))))))
+
+==================
+spec v4.4 encode: objects-keyed - uses the active delimiter in keyed headers and entry-row cells
+==================
+servers[2:|]{host|port|note}:
+  alpha: a.example.com|8080|"x|y"
+  beta: b.example.com|9090|p,q
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (keyed_header
+          length: (number)
+          delimiter: (delimiter)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (keyed_body
+          (keyed_row
+            key: (key
+              (unquoted_key))
+            values: (inline_values
+              (value
+                (unquoted_string))
+              (value
+                (number))
+              (value
+                (string))))
+          (keyed_row
+            key: (key
+              (unquoted_key))
+            values: (inline_values
+              (value
+                (unquoted_string))
+              (value
+                (number))
+              (value
+                (unquoted_string)))))))))
+
+==================
+spec v4.4 encode: objects-keyed - quotes entry keys per key encoding
+==================
+ids[2:]{v}:
+  "42": 1
+  "my key": 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (keyed_header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))))
+        value: (keyed_body
+          (keyed_row
+            key: (key
+              (string))
+            values: (inline_values
+              (value
+                (number))))
+          (keyed_row
+            key: (key
+              (string))
+            values: (inline_values
+              (value
+                (number)))))))))
+
+==================
+spec v4.4 encode: objects-keyed - quotes entry-row cells containing the active delimiter
+==================
+notes[2:]{text}:
+  n1: "a,b"
+  n2: c
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (keyed_header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))))
+        value: (keyed_body
+          (keyed_row
+            key: (key
+              (unquoted_key))
+            values: (inline_values
+              (value
+                (string))))
+          (keyed_row
+            key: (key
+              (unquoted_key))
+            values: (inline_values
+              (value
+                (unquoted_string)))))))))
+
+==================
+spec v4.4 encode: objects-keyed - keeps single-entry objects in nested form
+==================
+config:
+  only:
+    a: 1
+    b: 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (object
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (number)))
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (number))))))))))
+
+==================
+spec v4.4 encode: objects-keyed - keeps objects in nested form when entry values have differing key sets
+==================
+envs:
+  dev:
+    host: x
+  prod:
+    host: y
+    port: 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (object
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (unquoted_string)))))
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (object
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (unquoted_string)))
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (number))))))))))
+
+==================
+spec v4.4 encode: objects-keyed - keeps objects in nested form when a value is primitive
+==================
+m:
+  a:
+    x: 1
+  b: 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (object
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (number)))))
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (value
+              (number))))))))
+
+==================
+spec v4.4 encode: objects-keyed - keeps objects in nested form when an entry value contains an array
+==================
+m:
+  a:
+    tags[1]: x
+  b:
+    tags[1]: y
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (object
+              (pair
+                key: (key
+                  (unquoted_key))
+                (header
+                  length: (number))
+                value: (inline_values
+                  (value
+                    (unquoted_string))))))
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (object
+              (pair
+                key: (key
+                  (unquoted_key))
+                (header
+                  length: (number))
+                value: (inline_values
+                  (value
+                    (unquoted_string)))))))))))
+
+==================
+spec v4.4 encode: objects-keyed - emits a keyed header on the hyphen line when it is the first field of a list item
+==================
+items[2]:
+  - config[2:]{x}:
+      a: 1
+      b: 2
+    status: ok
+  - status: down
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  (keyed_header
+                    length: (number)
+                    fields: (field_list
+                      (field_name
+                        (unquoted_key))))
+                  value: (keyed_body
+                    (keyed_row
+                      key: (key
+                        (unquoted_key))
+                      values: (inline_values
+                        (value
+                          (number))))
+                    (keyed_row
+                      key: (key
+                        (unquoted_key))
+                      values: (inline_values
+                        (value
+                          (number))))))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string))))))
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (unquoted_string)))))))))))
+
+==================
+spec v4.4 encode: objects-keyed - never encodes an anonymous array element in keyed tabular form
+==================
+items[2]:
+  - a:
+      x: 1
+    b:
+      x: 2
+  - 5
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (object
+                    (pair
+                      key: (key
+                        (unquoted_key))
+                      value: (value
+                        (number)))))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (object
+                    (pair
+                      key: (key
+                        (unquoted_key))
+                      value: (value
+                        (number))))))))
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value
+                    (number)))))))))))
+
+==================
+spec v4.4 encode: objects-keyed - keeps an object of empty objects out of keyed tabular form
+==================
+m:
+  a:
+  b:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key)))
+          (pair
+            key: (key
+              (unquoted_key))))))))
+
+==================
+spec v4.4 encode: objects - preserves key order in objects with primitive values
+==================
+id: 123
+name: Ada
+active: true
+value: null
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (boolean)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (null))))))
+
+==================
+spec v4.4 encode: objects - encodes an empty root object as an empty document
+==================
+
+
+---
+
+(source_file)
+
+==================
+spec v4.4 encode: objects - quotes string value with colon
+==================
+note: "a:b"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec v4.4 encode: objects - quotes string value with comma
+==================
+note: "a,b"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec v4.4 encode: objects - quotes string value with newline
+==================
+text: "line1\nline2"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string
+            (escape_sequence)))))))
+
+==================
+spec v4.4 encode: objects - quotes string value with embedded quotes
+==================
+text: "say \"hello\""
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string
+            (escape_sequence)
+            (escape_sequence)))))))
+
+==================
+spec v4.4 encode: objects - quotes string values with a leading or trailing space
+==================
+lead: " padded"
+trail: "padded "
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec v4.4 encode: objects - quotes string value with only spaces
+==================
+text: "  "
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec v4.4 encode: objects - quotes string value that looks like true
+==================
+v: "true"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec v4.4 encode: objects - quotes string value that looks like number
+==================
+v: "42"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec v4.4 encode: objects - quotes string value that looks like a number with an uppercase exponent
+==================
+v: "1E6"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec v4.4 encode: objects - quotes key with colon
+==================
+"order:id": 7
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number))))))
+
+==================
+spec v4.4 encode: objects - quotes keys with brackets or braces
+==================
+"[index]": 5
+"{key}": 6
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number)))
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number))))))
+
+==================
+spec v4.4 encode: objects - quotes key with comma
+==================
+"a,b": 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number))))))
+
+==================
+spec v4.4 encode: objects - quotes keys with spaces
+==================
+"full name": Ada
+" a ": 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (unquoted_string)))
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number))))))
+
+==================
+spec v4.4 encode: objects - quotes keys with a leading or interior hyphen
+==================
+"-lead": 1
+"a-b": 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number)))
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number))))))
+
+==================
+spec v4.4 encode: objects - quotes numeric key
+==================
+"123": x
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (unquoted_string))))))
+
+==================
+spec v4.4 encode: objects - quotes empty string key
+==================
+"": 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number))))))
+
+==================
+spec v4.4 encode: objects - quotes non-ASCII key
+==================
+"café": 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (value
+          (number))))))
+
+==================
+spec v4.4 encode: objects - keeps dotted and literal-named keys unquoted
+==================
+a.b: 1
+true: 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (number))))))
+
+==================
+spec v4.4 encode: objects - escapes newline and quotes in keys
+==================
+"line\n": 1
+"he said \"hi\"": 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string
+            (escape_sequence)))
+        value: (value
+          (number)))
+      (pair
+        key: (key
+          (string
+            (escape_sequence)
+            (escape_sequence)))
+        value: (value
+          (number))))))
+
+==================
+spec v4.4 encode: objects - escapes tab in key
+==================
+"tab\there": 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string
+            (escape_sequence)))
+        value: (value
+          (number))))))
+
+==================
+spec v4.4 encode: objects - escapes U+0004 control character in key via \uXXXX
+==================
+"a\u0004b": 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string
+            (escape_sequence)))
+        value: (value
+          (number))))))
+
+==================
+spec v4.4 encode: objects - escapes U+001F control character in key via \uXXXX
+==================
+"x\u001fy": 2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string
+            (escape_sequence)))
+        value: (value
+          (number))))))
+
+==================
+spec v4.4 encode: objects - encodes deeply nested objects
+==================
+a:
+  b:
+    c: deep
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (object
+              (pair
+                key: (key
+                  (unquoted_key))
+                value: (value
+                  (unquoted_string))))))))))
+
+==================
+spec v4.4 encode: objects - encodes empty nested object
+==================
+user:
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))))))
+
+==================
+spec v4.4 encode: objects - encodes __proto__ own property as an ordinary key
+==================
+__proto__: polluted
+safe: true
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (boolean))))))
+
+==================
+spec v4.4 encode: objects - encodes __proto__ as a tabular field name
+==================
+rows[2]{__proto__,x}:
+  a,1
+  b,2
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number)
+          fields: (field_list
+            (field_name
+              (unquoted_key))
+            (field_name
+              (unquoted_key))))
+        value: (array_body
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (number)))
+          (tabular_row
+            (value
+              (unquoted_string))
+            (value
+              (number))))))))
+
+==================
+spec v4.4 encode: objects - quotes hash-leading string in object field value
+==================
+note: "#x"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec v4.4 encode: objects - encodes empty string key opening a nested object
+==================
+"":
+  a: 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (string))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (value
+              (number))))))))
+
+==================
+spec v4.4 encode: objects - keeps strings that only resemble numbers or literals, a leading byte-order mark, or DEL unquoted
+==================
+a: .5
+b: NaN
+c: True
+d: ﻿x
+e: ab
+f: ٤٢
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string))))))
+
+==================
+spec v4.4 encode: primitives - encodes safe strings without quotes
+==================
+hello
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec v4.4 encode: primitives - encodes safe string with underscore and numbers
+==================
+Ada_99
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec v4.4 encode: primitives - quotes empty string
+==================
+""
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec v4.4 encode: primitives - quotes string that looks like true
+==================
+"true"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec v4.4 encode: primitives - quotes string that looks like false
+==================
+"false"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec v4.4 encode: primitives - quotes string that looks like null
+==================
+"null"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec v4.4 encode: primitives - quotes string that looks like integer
+==================
+"42"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec v4.4 encode: primitives - quotes string that looks like a decimal
+==================
+"3.14"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec v4.4 encode: primitives - quotes string that looks like scientific notation
+==================
+"1e-6"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec v4.4 encode: primitives - quotes string with leading zero
+==================
+"05"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec v4.4 encode: primitives - escapes newline, tab, and carriage return in strings
+==================
+[3]: "line1\nline2","tab\there","return\rcarriage"
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number))
+      value: (inline_values
+        (value
+          (string
+            (escape_sequence)))
+        (value
+          (string
+            (escape_sequence)))
+        (value
+          (string
+            (escape_sequence)))))))
+
+==================
+spec v4.4 encode: primitives - escapes U+0004, U+0008, and U+000C via \uXXXX and keeps DEL, U+0085, and U+2028 literal in quoted strings
+==================
+val: "a\u0004\u0008\u000cb"
+sep: "a: b"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string
+            (escape_sequence)
+            (escape_sequence)
+            (escape_sequence))))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec v4.4 encode: primitives - escapes backslash in string
+==================
+"Users\\path"
+
+---
+
+(source_file
+  (document
+    (value
+      (string
+        (escape_sequence)))))
+
+==================
+spec v4.4 encode: primitives - keeps a string with an interior hyphen or hash unquoted
+==================
+a-b #c
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec v4.4 encode: primitives - quotes string starting with hyphen-space
+==================
+"- item"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec v4.4 encode: primitives - quotes single hyphen and hyphen-space string as object values
+==================
+marker: "-"
+note: "- item"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string)))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec v4.4 encode: primitives - quotes single hyphen and leading-hyphen string in array
+==================
+items[2]: "-","-x"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (string))
+          (value
+            (string)))))))
+
+==================
+spec v4.4 encode: primitives - quotes string with bracket notation
+==================
+"a[test]"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec v4.4 encode: primitives - quotes string with brace notation
+==================
+"{key}"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec v4.4 encode: primitives - encodes Unicode string without quotes
+==================
+café
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec v4.4 encode: primitives - encodes string with emoji and spaces
+==================
+hello 👋 world
+
+---
+
+(source_file
+  (document
+    (value
+      (unquoted_string))))
+
+==================
+spec v4.4 encode: primitives - encodes emoji inside a quoted string
+==================
+"a,🚀"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec v4.4 encode: primitives - encodes positive integer
+==================
+42
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec v4.4 encode: primitives - encodes decimal number
+==================
+3.14
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec v4.4 encode: primitives - encodes negative integer
+==================
+-7
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec v4.4 encode: primitives - encodes zero
+==================
+0
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec v4.4 encode: primitives - encodes negative zero as zero
+==================
+0
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec v4.4 encode: primitives - encodes large integer without exponent notation
+==================
+1000000
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec v4.4 encode: primitives - encodes small decimal without exponent notation
+==================
+0.000001
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec v4.4 encode: primitives - encodes large number
+==================
+100000000000000000000
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec v4.4 encode: primitives - encodes MAX_SAFE_INTEGER
+==================
+9007199254740991
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec v4.4 encode: primitives - encodes floats with their shortest round-trip digits
+==================
+[3]: 0.3333333333333333,0.30000000000000004,-0.000001
+
+---
+
+(source_file
+  (document
+    (array
+      (header
+        length: (number))
+      value: (inline_values
+        (value
+          (number))
+        (value
+          (number))
+        (value
+          (number))))))
+
+==================
+spec v4.4 encode: primitives - encodes true
+==================
+true
+
+---
+
+(source_file
+  (document
+    (value
+      (boolean))))
+
+==================
+spec v4.4 encode: primitives - encodes false
+==================
+false
+
+---
+
+(source_file
+  (document
+    (value
+      (boolean))))
+
+==================
+spec v4.4 encode: primitives - encodes null
+==================
+null
+
+---
+
+(source_file
+  (document
+    (value
+      (null))))
+
+==================
+spec v4.4 encode: primitives - quotes leading-plus numeric-like string
+==================
+"+1"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec v4.4 encode: primitives - quotes string starting with hash
+==================
+"#hello"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec v4.4 encode: primitives - quotes a root string starting with U+FEFF
+==================
+"﻿8"
+
+---
+
+(source_file
+  (document
+    (value
+      (string))))
+
+==================
+spec v4.4 encode: primitives - encodes a large integer-valued number with its shortest round-trip digits
+==================
+123456789012345680000
+
+---
+
+(source_file
+  (document
+    (value
+      (number))))
+
+==================
+spec v4.4 encode: primitives - quotes a delimiter, colon, hyphen, or number sign that a combining mark follows
+==================
+items[3]: "a,́b","-́","#́"
+k: "x:́"
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (string))
+          (value
+            (string))
+          (value
+            (string))))
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (string))))))
+
+==================
+spec v4.4 encode: whitespace - maintains proper indentation for nested structures
+==================
+user:
+  id: 123
+  name: Ada
+items[2]: a,b
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (value
+              (number)))
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (value
+              (unquoted_string)))))
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (inline_values
+          (value
+            (unquoted_string))
+          (value
+            (unquoted_string)))))))
+
+==================
+spec v4.4 encode: whitespace - respects custom indentSize option
+==================
+user:
+    name: Ada
+    role: admin
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (object
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (value
+              (unquoted_string)))
+          (pair
+            key: (key
+              (unquoted_key))
+            value: (value
+              (unquoted_string))))))))
+
+==================
+spec v4.4 encode: whitespace - leaves non-ASCII whitespace unquoted
+==================
+k:  x 
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        value: (value
+          (unquoted_string))))))
+
+==================
+spec v4.4 encode: whitespace - indents list-item sibling fields by indentSize
+==================
+a[2]:
+    - b: 1
+        c: 2
+    - 1
+
+---
+
+(source_file
+  (document
+    (object
+      (pair
+        key: (key
+          (unquoted_key))
+        (header
+          length: (number))
+        value: (array_body
+          (row
+            (object_row
+              (object
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number)))
+                (pair
+                  key: (key
+                    (unquoted_key))
+                  value: (value
+                    (number))))))
+          (row
+            (value_row
+              (row_values
+                (single_value
+                  (value
+                    (number)))))))))))

@@ -6,6 +6,7 @@ enum TokenType {
   INDENT, DEDENT, COMMENT, NEWLINE, KEY, STRING,
   CELL_COMMA, CELL_PIPE, CELL_TAB,
   FIRST_COMMA, FIRST_PIPE, FIRST_TAB, LIST_MARKER, BLANK_LINE, ENTRY_KEY,
+  FIELD_COMMA, FIELD_PIPE, FIELD_TAB, OBJECT_START,
 };
 
 typedef struct {
@@ -13,6 +14,7 @@ typedef struct {
   bool eof_newline;
   uint16_t pending_dedents;
   uint32_t pending_indent;
+  uint32_t indent_size;
 } Scanner;
 
 static void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
@@ -22,6 +24,7 @@ void *tree_sitter_toon_external_scanner_create(void) {
   Scanner *scanner = calloc(1, sizeof(Scanner));
   array_init(&scanner->indents);
   array_push(&scanner->indents, 0);
+  scanner->indent_size = 2;
   return scanner;
 }
 
@@ -34,13 +37,14 @@ void tree_sitter_toon_external_scanner_destroy(void *payload) {
 unsigned tree_sitter_toon_external_scanner_serialize(void *payload, char *buffer) {
   Scanner *scanner = payload;
   unsigned count = scanner->indents.size;
-  unsigned limit = (TREE_SITTER_SERIALIZATION_BUFFER_SIZE - 7) / sizeof(uint32_t);
+  unsigned limit = (TREE_SITTER_SERIALIZATION_BUFFER_SIZE - 11) / sizeof(uint32_t);
   if (count > limit) count = limit;
   buffer[0] = scanner->eof_newline;
   memcpy(buffer + 1, &scanner->pending_dedents, 2);
   memcpy(buffer + 3, &scanner->pending_indent, 4);
-  memcpy(buffer + 7, scanner->indents.contents, count * sizeof(uint32_t));
-  return 7 + count * sizeof(uint32_t);
+  memcpy(buffer + 7, &scanner->indent_size, 4);
+  memcpy(buffer + 11, scanner->indents.contents, count * sizeof(uint32_t));
+  return 11 + count * sizeof(uint32_t);
 }
 
 void tree_sitter_toon_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
@@ -51,7 +55,9 @@ void tree_sitter_toon_external_scanner_deserialize(void *payload, const char *bu
   if (length >= 3) memcpy(&scanner->pending_dedents, buffer + 1, 2);
   scanner->pending_indent = 0;
   if (length >= 7) memcpy(&scanner->pending_indent, buffer + 3, 4);
-  for (unsigned offset = 7; offset + sizeof(uint32_t) <= length; offset += sizeof(uint32_t)) {
+  scanner->indent_size = 2;
+  if (length >= 11) memcpy(&scanner->indent_size, buffer + 7, 4);
+  for (unsigned offset = 11; offset + sizeof(uint32_t) <= length; offset += sizeof(uint32_t)) {
     uint32_t indent;
     memcpy(&indent, buffer + offset, sizeof(indent));
     array_push(&scanner->indents, indent);
@@ -94,42 +100,36 @@ static bool equals(const TokenText *text, const char *word) {
   return true;
 }
 
-// Look ahead without moving mark_end: a valid header leaves the key token
-// ending before '['. Malformed bracket syntax remains a literal decoder key.
-static bool scan_header_suffix(TSLexer *lexer) {
-  advance(lexer); // '['
-  if (lexer->lookahead < '0' || lexer->lookahead > '9') return false;
-  bool zero = lexer->lookahead == '0';
-  advance(lexer);
-  if (zero && lexer->lookahead >= '0' && lexer->lookahead <= '9') return false;
-  while (lexer->lookahead >= '0' && lexer->lookahead <= '9') advance(lexer);
-  bool keyed = lexer->lookahead == ':';
-  if (keyed) advance(lexer);
-  if (lexer->lookahead == '|' || lexer->lookahead == '\t') advance(lexer);
-  if (lexer->lookahead != ']') return false;
-  advance(lexer);
-  if (lexer->lookahead == '{') {
-    unsigned depth = 0;
-    bool quoted = false, escaped = false;
-    do {
-      int32_t c = lexer->lookahead;
-      if (lexer->eof(lexer) || c == '\n' || c == '\r') return false;
-      if (!quoted && c == '{') depth++;
-      if (!quoted && c == '}') depth--;
-      if (escaped) escaped = false;
-      else if (quoted && c == '\\') escaped = true;
-      else if (c == '"') quoted = !quoted;
-      advance(lexer);
-    } while (depth);
-  } else if (keyed) return false;
-  return lexer->lookahead == ':';
+// Header discovery uses the first unquoted bracket and colon, even when the
+// bracket segment is malformed. Keep mark_end before '[' so the grammar can
+// diagnose the header instead of swallowing it as a literal key.
+static bool header_has_colon(TSLexer *lexer, TokenText *text) {
+  bool quoted = false, escaped = false;
+  while (!lexer->eof(lexer) && lexer->lookahead != '\n') {
+    int32_t c = lexer->lookahead;
+    if (!quoted && c == ':') return true;
+    if (text) array_push(text, c);
+    advance(lexer);
+    if (escaped) escaped = false;
+    else if (quoted && c == '\\') escaped = true;
+    else if (c == '"') quoted = !quoted;
+  }
+  return false;
 }
 
-static bool scan_token(TSLexer *lexer, const bool *valid) {
-  if (lexer->eof(lexer) || lexer->lookahead == '"' || lexer->lookahead == '\n' || lexer->lookahead == '\r') return false;
+static bool scan_token(TSLexer *lexer, const bool *valid, bool leading_cr) {
+  if (!leading_cr && (lexer->eof(lexer) || lexer->lookahead == '"' || lexer->lookahead == '\n')) return false;
   int symbol = STRING;
   int32_t separator = 0;
-  bool first = false;
+  bool first = false, field = false;
+  for (int i = 0; i < 3; i++) {
+    if (valid[FIELD_COMMA + i]) {
+      field = true;
+      symbol = FIELD_COMMA + i;
+      separator = i == 0 ? ',' : i == 1 ? '|' : '\t';
+      break;
+    }
+  }
   for (int i = 0; i < 3; i++) {
     if (valid[FIRST_COMMA + i] || valid[CELL_COMMA + i]) {
       first = valid[FIRST_COMMA + i];
@@ -143,10 +143,25 @@ static bool scan_token(TSLexer *lexer, const bool *valid) {
   array_init(&text);
   bool quoted = false, escaped = false;
   unsigned trimmed = 0;
-  bool key_candidate = valid[KEY] || valid[ENTRY_KEY];
-  while (!lexer->eof(lexer) && lexer->lookahead != '\n' && lexer->lookahead != '\r') {
+  bool key_candidate = !field && (valid[KEY] || valid[ENTRY_KEY]);
+  if (leading_cr) {
+    array_push(&text, '\r');
+    trimmed = 1;
+    lexer->mark_end(lexer);
+  }
+  while (!lexer->eof(lexer) && lexer->lookahead != '\n') {
     int32_t c = lexer->lookahead;
+    if (!quoted && field && (c == '{' || c == '}' || c == ',' || c == '|' || c == '\t')) break;
     if (!quoted && separator && c == separator) break;
+    if (c == '\r') {
+      advance(lexer);
+      // Only a single CR at the very end of a line is stripped (§12).
+      if (lexer->lookahead == '\n' || lexer->eof(lexer)) break;
+      array_push(&text, c);
+      trimmed = text.size;
+      lexer->mark_end(lexer);
+      continue;
+    }
     if (valid[LIST_MARKER] && text.size == 1 && text.contents[0] == '-' && c == ' ') {
       while (lexer->lookahead == ' ') advance(lexer);
       lexer->mark_end(lexer);
@@ -155,7 +170,7 @@ static bool scan_token(TSLexer *lexer, const bool *valid) {
       return true;
     }
     if (!quoted && c == ':' && (key_candidate || first)) {
-      if (!separator && text.size && text.contents[0] == '[') {
+      if (!separator && !valid[ENTRY_KEY] && text.size && text.contents[0] == '[') {
         array_delete(&text);
         return false;
       }
@@ -167,26 +182,24 @@ static bool scan_token(TSLexer *lexer, const bool *valid) {
       array_delete(&text);
       return false;
     }
-    if (!quoted && c == '[' && valid[KEY]) {
-      bool header_key = text.size > 0;
-      for (unsigned i = 0; i < text.size; i++) {
-        int32_t k = text.contents[i];
-        if (!((k >= 'a' && k <= 'z') || (k >= 'A' && k <= 'Z') || k == '_' || (i && ((k >= '0' && k <= '9') || k == '.')))) header_key = false;
+    if (!quoted && c == '[' && !field && valid[KEY]) {
+      bool has_key = text.size > 0;
+      bool tab_before_bracket = has_key && text.contents[text.size - 1] == '\t';
+      bool colon = header_has_colon(lexer, &text);
+      if (colon) {
+        array_delete(&text);
+        if (!has_key || tab_before_bracket) return false;
+        lexer->result_symbol = KEY;
+        return true;
       }
-      if (header_key) {
-        if (scan_header_suffix(lexer)) {
-          array_delete(&text);
-          lexer->result_symbol = KEY;
-          return true;
-        }
-        lexer->mark_end(lexer);
-        continue;
-      }
-    }
-    // Expanded list markers are structural, not a cell or an unquoted key.
-    if (text.size == 1 && text.contents[0] == '-' && c == ' ' && separator) {
+      // No unquoted colon means this is a scalar, including items[2].
+      while (text.size && (text.contents[text.size - 1] == ' ' || text.contents[text.size - 1] == '\r')) text.size--;
+      bool empty_array = equals(&text, "[]");
       array_delete(&text);
-      return false;
+      if (!valid[STRING] || empty_array) return false;
+      lexer->mark_end(lexer);
+      lexer->result_symbol = STRING;
+      return true;
     }
     array_push(&text, c);
     advance(lexer);
@@ -204,7 +217,7 @@ static bool scan_token(TSLexer *lexer, const bool *valid) {
     lexer->result_symbol = LIST_MARKER;
     return true;
   }
-  bool primitive = numeric(&text) || equals(&text, "true") || equals(&text, "false") || equals(&text, "null") || (!separator && equals(&text, "[]"));
+  bool primitive = !field && (numeric(&text) || equals(&text, "true") || equals(&text, "false") || equals(&text, "null") || (!separator && equals(&text, "[]")));
   bool result = trimmed && !primitive && valid[symbol];
   array_delete(&text);
   if (result) lexer->result_symbol = symbol;
@@ -218,7 +231,7 @@ bool tree_sitter_toon_external_scanner_scan(void *payload, TSLexer *lexer, const
   if (scanner->pending_dedents) {
     if (!valid[DEDENT]) return false;
     scanner->pending_dedents--;
-    array_pop(&scanner->indents);
+    (void)array_pop(&scanner->indents);
     lexer->result_symbol = DEDENT;
     return true;
   }
@@ -232,10 +245,15 @@ bool tree_sitter_toon_external_scanner_scan(void *payload, TSLexer *lexer, const
   scanner->pending_indent = 0;
   bool line_start = lexer->get_column(lexer) == 0;
   uint32_t indent = 0;
-  bool tabs = false;
+  bool tabs = false, leading_cr = false;
   if (!line_start) {
     while (lexer->lookahead == ' ') skip(lexer);
-    if (lexer->lookahead == '\n' || lexer->lookahead == '\r') {
+    bool carriage_return = lexer->lookahead == '\r';
+    if (lexer->lookahead == '\r') {
+      advance(lexer);
+      if (lexer->lookahead != '\n' && !lexer->eof(lexer)) leading_cr = true;
+    }
+    if (!leading_cr && (lexer->lookahead == '\n' || (carriage_return && lexer->eof(lexer)))) {
       if (!valid[NEWLINE]) return false;
       consume_newline(lexer, false);
       lexer->result_symbol = NEWLINE;
@@ -247,33 +265,48 @@ bool tree_sitter_toon_external_scanner_scan(void *payload, TSLexer *lexer, const
       indent = 0;
       tabs = false;
       while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
-        if (lexer->lookahead == '\t') { tabs = true; indent = (indent + 2) & ~1u; }
+        if (lexer->lookahead == '\t') { tabs = true; indent += 2; }
         else indent++;
         skip(lexer);
       }
       if (!tabs && lexer->lookahead == '#' && valid[COMMENT]) {
-        while (!lexer->eof(lexer) && lexer->lookahead != '\n' && lexer->lookahead != '\r') advance(lexer);
+        while (!lexer->eof(lexer) && lexer->lookahead != '\n') advance(lexer);
         consume_newline(lexer, false);
         lexer->result_symbol = COMMENT;
         return true;
       }
-      if (lexer->lookahead != '\n' && lexer->lookahead != '\r') break;
+      // Keep exact widths for configurable indentation. For editor recovery,
+      // align a nearby existing scope in the same default two-space bucket.
+      if (scanner->indent_size != 1 && indent > 1) {
+        for (unsigned i = scanner->indents.size; i > 0; i--) {
+          uint32_t known = scanner->indents.contents[i - 1];
+          if (known > 1 && known / 2 == indent / 2) { indent = known; break; }
+        }
+      }
+      if (lexer->lookahead == '\r') {
+        lexer->mark_end(lexer);
+        advance(lexer);
+        if (lexer->lookahead != '\n' && !lexer->eof(lexer)) { leading_cr = true; break; }
+      }
+      if (lexer->lookahead != '\n') break;
       if (valid[BLANK_LINE]) {
         consume_newline(lexer, false);
+        lexer->mark_end(lexer);
         lexer->result_symbol = BLANK_LINE;
         return true;
       }
       consume_newline(lexer, true);
     }
   }
-  if (lexer->eof(lexer)) {
+  if (!leading_cr && lexer->eof(lexer)) {
+    lexer->mark_end(lexer);
     if (valid[NEWLINE] && !scanner->eof_newline) {
       scanner->eof_newline = true;
       lexer->result_symbol = NEWLINE;
       return true;
     }
     if (valid[DEDENT] && scanner->indents.size > 1) {
-      array_pop(&scanner->indents);
+      (void)array_pop(&scanner->indents);
       lexer->result_symbol = DEDENT;
       return true;
     }
@@ -283,6 +316,7 @@ bool tree_sitter_toon_external_scanner_scan(void *payload, TSLexer *lexer, const
   if (line_start) {
     uint32_t current = *array_back(&scanner->indents);
     if (indent > current && valid[INDENT]) {
+      if (scanner->indents.size == 1) scanner->indent_size = indent;
       array_push(&scanner->indents, indent);
       lexer->result_symbol = INDENT;
       return true;
@@ -291,10 +325,22 @@ bool tree_sitter_toon_external_scanner_scan(void *payload, TSLexer *lexer, const
       for (unsigned i = scanner->indents.size - 1; i > 0 && scanner->indents.contents[i] > indent; i--) scanner->pending_dedents++;
       scanner->pending_dedents--;
       scanner->pending_indent = indent;
-      array_pop(&scanner->indents);
+      (void)array_pop(&scanner->indents);
       lexer->result_symbol = DEDENT;
       return true;
     }
+    if (indent != current) return false;
   }
-  return scan_token(lexer, valid);
+  if (valid[OBJECT_START]) {
+    lexer->mark_end(lexer);
+    // Keyless array headers stand at the hyphen's physical depth. All other
+    // items share a virtual field depth, so an empty first field cannot capture
+    // its siblings and a primitive cannot open a nested scope.
+    if (lexer->lookahead == '[' && header_has_colon(lexer, NULL)) return false;
+    uint32_t field_indent = *array_back(&scanner->indents) + scanner->indent_size;
+    array_push(&scanner->indents, field_indent);
+    lexer->result_symbol = OBJECT_START;
+    return true;
+  }
+  return scan_token(lexer, valid, leading_cr);
 }
